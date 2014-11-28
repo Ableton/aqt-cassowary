@@ -1,4 +1,4 @@
-cassowary
+Cassowary
 =========
 
-QML binding for the Cassowary library
+QML binding for the Cassowary library.
