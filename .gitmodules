@@ -1,0 +1,3 @@
+[submodule "third-party/rhea"]
+	path = third-party/rhea
+	url = https://github.com/Nocte-/rhea.git
