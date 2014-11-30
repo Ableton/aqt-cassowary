@@ -1,0 +1,13 @@
+*.config            text
+*.cpp               text diff=cpp
+*.gyp               text
+*.gypi              text
+*.hpp               text diff=cpp
+*.js                text
+*.md                text
+*.qml               text
+*.txt               text
+.gitattributes      text
+.gitignore          text
+data-example        eol=lf
+qmldir              text
