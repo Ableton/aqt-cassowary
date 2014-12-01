@@ -10,5 +10,10 @@ Solver::Solver(QQuickItem* pParent)
 {
 }
 
+rhea::simplex_solver& Solver::solverImpl()
+{
+  return mSolverImpl;
+}
+
 } // namespace cassowary
 } // namespace ableton

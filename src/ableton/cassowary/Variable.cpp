@@ -21,5 +21,10 @@ void Variable::setValue(double value)
   Q_EMIT valueChanged(value);
 }
 
+rhea::linear_expression Variable::expressionImpl() const
+{
+  return rhea::linear_expression(mVariable);
+}
+
 } // namespace cassowary
 } // namespace ableton

@@ -2,17 +2,22 @@
     'variables': {
         'CassowaryPlugin_include_dir': '.',
         'CassowaryPlugin_files': [
+            '../third-party/rhea/rhea/abstract_variable.cpp',
+            '../third-party/rhea/rhea/linear_expression.cpp',
+            '../third-party/rhea/rhea/simplex_solver.cpp',
+            '../third-party/rhea/rhea/symbolic_weight.cpp',
+            '../third-party/rhea/rhea/tableau.cpp',
             'ableton/cassowary/CassowaryPlugin.cpp',
             'ableton/cassowary/CassowaryPlugin.hpp',
+            'ableton/cassowary/Constraint.cpp',
+            'ableton/cassowary/Constraint.hpp',
             'ableton/cassowary/Solver.cpp',
             'ableton/cassowary/Solver.hpp',
+            'ableton/cassowary/SolverItem.cpp',
+            'ableton/cassowary/SolverItem.hpp',
             'ableton/cassowary/Variable.cpp',
             'ableton/cassowary/Variable.hpp',
-            '../third-party/rhea/rhea/abstract_variable.cpp',
-            '../third-party/rhea/rhea/symbolic_weight.cpp',
-            '../third-party/rhea/rhea/linear_expression.cpp',
-            '../third-party/rhea/rhea/tableau.cpp',
-            '../third-party/rhea/rhea/simplex_solver.cpp'
+            'ableton/estd/functional.hpp',
         ],
     },
 
@@ -23,6 +28,9 @@
 
             'variables': {
                 'QtPluginUri': 'Ableton.Cassowary',
+                'ExtraMocArgs': [
+                    '-I', '<(CassowaryPlugin_include_dir)',
+                ],
             },
 
             'dependencies': [

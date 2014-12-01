@@ -7,6 +7,7 @@
 ABL_DISABLE_WARNINGS
 #include <QtQuick/QQuickItem>
 #include <rhea/variable.hpp>
+#include <rhea/linear_expression.hpp>
 ABL_RESTORE_WARNINGS
 
 namespace ableton {
@@ -20,11 +21,11 @@ public:
   Variable(QQuickItem* pParent = 0);
 
   Q_PROPERTY(double value READ value WRITE setValue NOTIFY valueChanged)
+  Q_SIGNAL void valueChanged(double value);
 
   double value() const;
   void setValue(double value);
-
-  Q_SIGNAL void valueChanged(double value);
+  rhea::linear_expression expressionImpl() const;
 
 private:
   rhea::variable mVariable;

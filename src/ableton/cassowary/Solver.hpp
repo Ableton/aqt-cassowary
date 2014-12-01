@@ -18,9 +18,10 @@ class Solver : public QQuickItem
 
 public:
   Solver(QQuickItem* pParent = 0);
+  rhea::simplex_solver& solverImpl();
 
 private:
-  rhea::simplex_solver mSolver;
+  rhea::simplex_solver mSolverImpl;
 };
 
 } // namespace cassowary
