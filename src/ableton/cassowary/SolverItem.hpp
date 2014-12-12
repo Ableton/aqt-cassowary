@@ -13,6 +13,11 @@ ABL_RESTORE_WARNINGS
 namespace ableton {
 namespace cassowary {
 
+class SolverItemError : public std::runtime_error
+{
+  using std::runtime_error::runtime_error;
+};
+
 class SolverItem : public QQuickItem
 {
   Q_OBJECT
@@ -25,6 +30,9 @@ public:
 
   Solver* solver() const;
   void setSolver(Solver* solver);
+
+  rhea::simplex_solver& solverImpl();
+  const rhea::simplex_solver& solverImpl() const;
 
 protected:
   void add();

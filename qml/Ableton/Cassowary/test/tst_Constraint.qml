@@ -35,6 +35,17 @@ TestScene {
             compare(v1.value, data.value)
         }
     }
+
+    TestCase {
+        Solver { id: s2 }
+        Variable { id: v2 }
+        Constraint { id: c2; solver: s2; expr: eq(v2, 42) }
+        Constraint { id: c3; solver: s2; expr: eq(v2, 21);
+                     strength: Strength.Strong; }
+        function test_strengths() {
+            compare(v2.value, 42)
+            c2.strength = Strength.Weak
+            compare(v2.value, 21)
         }
     }
 }

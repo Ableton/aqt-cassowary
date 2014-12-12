@@ -20,6 +20,21 @@ void SolverItem::setSolver(Solver* solver)
   remove();
   mSolver = solver;
   add();
+  Q_EMIT solverChanged(solver);
+}
+
+rhea::simplex_solver& SolverItem::solverImpl()
+{
+  if (mSolver)
+    return mSolver->solverImpl();
+  throw SolverItemError { "No solver available" };
+}
+
+const rhea::simplex_solver& SolverItem::solverImpl() const
+{
+  if (mSolver)
+    return mSolver->solverImpl();
+  throw SolverItemError { "No solver available" };
 }
 
 void SolverItem::add()

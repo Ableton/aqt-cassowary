@@ -2,6 +2,7 @@
 
 #include <ableton/cassowary/Constraint.hpp>
 #include <ableton/cassowary/Variable.hpp>
+#include <ableton/cassowary/Strength.hpp>
 #include <ableton/estd/functional.hpp>
 #include <ableton/build_system/Warnings.hpp>
 
@@ -136,7 +137,23 @@ Constraint::Constraint(QQuickItem* pParent)
         rhea::linear_equation>(
           expr,
           assignTo(mConstraint));
+      mConstraint.change_weight(mWeight);
+      mConstraint.change_strength(Strength::impl(mStrength));
+      add();
     } catch (const WithQVariantError&) {}
+  });
+
+  connect(this, &Constraint::strengthChanged, [this](Strength::Types) {
+    remove();
+    if (!mConstraint.is_nil())
+      mConstraint.change_strength(Strength::impl(mStrength));
+    add();
+  });
+
+  connect(this, &Constraint::weightChanged, [this](double) {
+    remove();
+    if (!mConstraint.is_nil())
+      mConstraint.change_weight(mWeight);
     add();
   });
 }

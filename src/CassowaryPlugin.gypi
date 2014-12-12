@@ -15,6 +15,8 @@
             'ableton/cassowary/Solver.hpp',
             'ableton/cassowary/SolverItem.cpp',
             'ableton/cassowary/SolverItem.hpp',
+            'ableton/cassowary/Strength.hpp',
+            'ableton/cassowary/Strength.cpp',
             'ableton/cassowary/Variable.cpp',
             'ableton/cassowary/Variable.hpp',
             'ableton/estd/functional.hpp',
