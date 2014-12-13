@@ -105,56 +105,32 @@ void withQVariant(const QVariant& var, Fns&& ...fns)
   impl(var, visitor);
 }
 
-template <typename T>
-struct AssignTo
-{
-  T& target;
+} // anonymous namespace
 
-  template <typename U>
-  T& operator() (U&& origin)
+struct Constraint::Setter
+{
+  Constraint& target;
+
+  template <typename T>
+  void operator() (T&& origin)
   {
-    return target = std::forward<T>(origin);
+    return target.set(
+      std::make_shared<typename std::decay<T>::type>(
+        std::forward<T>(origin)));
   }
 };
 
-template <typename T>
-auto assignTo(T& target)
-  -> AssignTo<T>
-{
-  return AssignTo<T> { target };
-}
-
-} // anonymous namespace
-
 Constraint::Constraint(QQuickItem* pParent)
-  : SolverItem(pParent)
+  : ConstraintItem(pParent)
 {
   connect(this, &Constraint::exprChanged, [this](QVariant expr) {
     try {
-      remove();
       withQVariant<
         rhea::linear_inequality,
         rhea::linear_equation>(
           expr,
-          assignTo(mConstraint));
-      mConstraint.change_weight(mWeight);
-      mConstraint.change_strength(Strength::impl(mStrength));
-      add();
+          Setter { *this });
     } catch (const WithQVariantError&) {}
-  });
-
-  connect(this, &Constraint::strengthChanged, [this](Strength::Types) {
-    remove();
-    if (!mConstraint.is_nil())
-      mConstraint.change_strength(Strength::impl(mStrength));
-    add();
-  });
-
-  connect(this, &Constraint::weightChanged, [this](double) {
-    remove();
-    if (!mConstraint.is_nil())
-      mConstraint.change_weight(mWeight);
-    add();
   });
 }
 
@@ -225,20 +201,6 @@ QVariant Constraint::geq(QVariant a, QVariant b)
 QVariant Constraint::leq(QVariant a, QVariant b)
 {
   return operation(a, b, estd::less_equal<>{});
-}
-
-void Constraint::addIn(rhea::simplex_solver& solver)
-{
-  if (!mConstraint.is_nil()) {
-    solver.add_constraint(mConstraint);
-  }
-}
-
-void Constraint::removeIn(rhea::simplex_solver& solver)
-{
-  if (!mConstraint.is_nil()) {
-    solver.remove_constraint(mConstraint);
-  }
 }
 
 } // namespace cassowary

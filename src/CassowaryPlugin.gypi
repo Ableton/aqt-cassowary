@@ -11,6 +11,8 @@
             'ableton/cassowary/CassowaryPlugin.hpp',
             'ableton/cassowary/Constraint.cpp',
             'ableton/cassowary/Constraint.hpp',
+            'ableton/cassowary/ConstraintItem.cpp',
+            'ableton/cassowary/ConstraintItem.hpp',
             'ableton/cassowary/Solver.cpp',
             'ableton/cassowary/Solver.hpp',
             'ableton/cassowary/SolverItem.cpp',
