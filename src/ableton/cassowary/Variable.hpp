@@ -25,7 +25,7 @@ public:
 
   double value() const;
   void setValue(double value);
-  rhea::linear_expression expressionImpl() const;
+  const rhea::variable& impl() const;
 
 private:
   rhea::variable mVariable;

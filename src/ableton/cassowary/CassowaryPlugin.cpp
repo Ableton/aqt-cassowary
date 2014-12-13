@@ -3,6 +3,7 @@
 #include <ableton/cassowary/CassowaryPlugin.hpp>
 #include <ableton/cassowary/Constraint.hpp>
 #include <ableton/cassowary/Solver.hpp>
+#include <ableton/cassowary/Stay.hpp>
 #include <ableton/cassowary/Strength.hpp>
 #include <ableton/cassowary/Variable.hpp>
 #include <ableton/build_system/Warnings.hpp>
@@ -23,6 +24,8 @@ void CassowaryPlugin::registerTypes(const char* uri)
     uri, 1, 0, "Variable");
   qmlRegisterType<Constraint>(
     uri, 1, 0, "Constraint");
+  qmlRegisterType<Stay>(
+    uri, 1, 0, "Stay");
   qmlRegisterUncreatableType<Strength>(
     uri, 1, 0, "Strength", "Just an enum, dude!");
 }

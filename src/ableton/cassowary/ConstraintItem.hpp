@@ -13,7 +13,9 @@ class ConstraintItem : public SolverItem
   Q_OBJECT
 
 public:
-  ConstraintItem(QQuickItem* pParent = 0);
+  ConstraintItem(QQuickItem* pParent = 0,
+                 Strength::Types strength = Strength::Required,
+                 double weight = 1.0);
 
   Q_PROPERTY(ableton::cassowary::Strength::Types
              strength MEMBER mStrength NOTIFY strengthChanged)
@@ -29,8 +31,8 @@ private:
   void addIn(rhea::simplex_solver& solver) override;
   void removeIn(rhea::simplex_solver& solver) override;
 
-  Strength::Types mStrength = Strength::Required;
-  double mWeight = 1;
+  Strength::Types mStrength;
+  double mWeight;
   rhea::constraint mConstraint;
 };
 

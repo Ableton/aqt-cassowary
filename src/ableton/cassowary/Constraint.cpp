@@ -150,7 +150,7 @@ rhea::linear_expression expression(QVariant v)
     return v.value<double>();
   }
   if (Variable* e = v.value<Variable*>()) {
-    return e->expressionImpl();
+    return e->impl();
   }
   throw NonExpressionError { "Invalid argument" };
 }

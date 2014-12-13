@@ -48,4 +48,12 @@ TestScene {
             compare(v2.value, 21)
         }
     }
+
+    TestCase {
+        Constraint { id: c4 }
+        function test_defaults() {
+            compare(c4.strength, Strength.Required)
+            compare(c4.weight, 1)
+        }
+    }
 }

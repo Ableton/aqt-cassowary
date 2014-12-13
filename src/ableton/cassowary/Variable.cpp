@@ -21,9 +21,9 @@ void Variable::setValue(double value)
   Q_EMIT valueChanged(value);
 }
 
-rhea::linear_expression Variable::expressionImpl() const
+const rhea::variable& Variable::impl() const
 {
-  return rhea::linear_expression(mVariable);
+  return mVariable;
 }
 
 } // namespace cassowary

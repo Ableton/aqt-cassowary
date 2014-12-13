@@ -5,8 +5,12 @@
 namespace ableton {
 namespace cassowary {
 
-ConstraintItem::ConstraintItem(QQuickItem* pParent)
+ConstraintItem::ConstraintItem(QQuickItem* pParent,
+                               Strength::Types strength,
+                               double weight)
   : SolverItem(pParent)
+  , mStrength(strength)
+  , mWeight(weight)
 {
   connect(this, &ConstraintItem::strengthChanged, [this](Strength::Types) {
     remove();
