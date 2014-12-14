@@ -6,48 +6,63 @@ namespace ableton {
 namespace cassowary {
 
 SolverItem::SolverItem(QQuickItem* pParent)
-  : QQuickItem(pParent)
+  : SolverBase(pParent)
 {
+  connect(this, &QQuickItem::parentChanged, this, &SolverItem::updateSolver);
+  connect(this, &SolverItem::solverChanged, this, &SolverItem::updateSolver);
+  updateSolver();
 }
 
-Solver* SolverItem::solver() const
+SolverItem::~SolverItem()
 {
-  return mSolver;
+  disconnect();
 }
 
-void SolverItem::setSolver(Solver* solver)
+void SolverItem::updateSolver()
 {
-  remove();
-  mSolver = solver;
-  add();
-  Q_EMIT solverChanged(solver);
+  auto oldParentSolver = mParentSolver;
+  auto newParentSolver = dynamic_cast<SolverBase*>(parentItem());
+  auto actualSolver    = mSolver
+    ? static_cast<SolverBase*>(mSolver)
+    : newParentSolver;
+  auto solverImpl      = actualSolver
+    ? actualSolver->solverImpl()
+    : nullptr;
+
+  if (actualSolver != mActualSolver) {
+    if (mActualSolver)
+      disconnect(mActualSolver, &SolverBase::solverImplChanged,
+               this, &SolverItem::updateSolver);
+    if (actualSolver)
+      connect(actualSolver, &SolverBase::solverImplChanged,
+              this, &SolverItem::updateSolver);
+    mActualSolver = actualSolver;
+  }
+
+  if (solverImpl != mSolverImpl) {
+    remove();
+    mSolverImpl = solverImpl;
+    add();
+    Q_EMIT solverImplChanged();
+  }
 }
 
-rhea::simplex_solver& SolverItem::solverImpl()
+std::shared_ptr<rhea::simplex_solver> SolverItem::solverImpl()
 {
-  if (mSolver)
-    return mSolver->solverImpl();
-  throw SolverItemError { "No solver available" };
-}
-
-const rhea::simplex_solver& SolverItem::solverImpl() const
-{
-  if (mSolver)
-    return mSolver->solverImpl();
-  throw SolverItemError { "No solver available" };
+  return mSolverImpl;
 }
 
 void SolverItem::add()
 {
-  if (mSolver) {
-    addIn(mSolver->solverImpl());
+  if (mSolverImpl) {
+    addIn(*mSolverImpl);
   }
 }
 
 void SolverItem::remove()
 {
-  if (mSolver) {
-    removeIn(mSolver->solverImpl());
+  if (mSolverImpl) {
+    removeIn(*mSolverImpl);
   }
 }
 

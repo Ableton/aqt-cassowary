@@ -2,26 +2,22 @@
 
 #pragma once
 
-#include <ableton/build_system/Warnings.hpp>
-
-ABL_DISABLE_WARNINGS
-#include <QtQuick/QQuickItem>
-#include <rhea/simplex_solver.hpp>
-ABL_RESTORE_WARNINGS
+#include <ableton/cassowary/SolverBase.hpp>
 
 namespace ableton {
 namespace cassowary {
 
-class Solver : public QQuickItem
+class Solver : public SolverBase
 {
   Q_OBJECT
 
 public:
   Solver(QQuickItem* pParent = 0);
-  rhea::simplex_solver& solverImpl();
+  ~Solver() override;
+  std::shared_ptr<rhea::simplex_solver> solverImpl() override;
 
 private:
-  rhea::simplex_solver mSolverImpl;
+  std::shared_ptr<rhea::simplex_solver> mSolverImpl;
 };
 
 } // namespace cassowary

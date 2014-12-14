@@ -25,7 +25,7 @@ public:
 
   double value() const;
   void setValue(double value);
-  const rhea::variable& impl() const;
+  const rhea::variable& variableImpl() const;
 
 private:
   rhea::variable mVariable;

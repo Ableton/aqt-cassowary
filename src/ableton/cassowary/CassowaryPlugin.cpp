@@ -3,6 +3,7 @@
 #include <ableton/cassowary/CassowaryPlugin.hpp>
 #include <ableton/cassowary/Constraint.hpp>
 #include <ableton/cassowary/Solver.hpp>
+#include <ableton/cassowary/SolverProxy.hpp>
 #include <ableton/cassowary/Stay.hpp>
 #include <ableton/cassowary/Strength.hpp>
 #include <ableton/cassowary/Variable.hpp>
@@ -20,12 +21,16 @@ void CassowaryPlugin::registerTypes(const char* uri)
 {
   qmlRegisterType<Solver>(
     uri, 1, 0, "Solver");
+  qmlRegisterType<SolverProxy>(
+    uri, 1, 0, "SolverProxy");
   qmlRegisterType<Variable>(
     uri, 1, 0, "Variable");
   qmlRegisterType<Constraint>(
     uri, 1, 0, "Constraint");
   qmlRegisterType<Stay>(
     uri, 1, 0, "Stay");
+  qmlRegisterUncreatableType<SolverBase>(
+    uri, 1, 0, "SolverBase", "Entschuldigung, just an abstract base!");
   qmlRegisterUncreatableType<Strength>(
     uri, 1, 0, "Strength", "Just an enum, dude!");
 }

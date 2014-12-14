@@ -6,11 +6,16 @@ namespace ableton {
 namespace cassowary {
 
 Solver::Solver(QQuickItem* pParent)
-  : QQuickItem(pParent)
+  : SolverBase(pParent)
+  , mSolverImpl(std::make_shared<rhea::simplex_solver>())
 {
 }
 
-rhea::simplex_solver& Solver::solverImpl()
+Solver::~Solver()
+{
+}
+
+std::shared_ptr<rhea::simplex_solver> Solver::solverImpl()
 {
   return mSolverImpl;
 }

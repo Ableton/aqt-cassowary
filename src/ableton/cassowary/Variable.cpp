@@ -21,7 +21,7 @@ void Variable::setValue(double value)
   Q_EMIT valueChanged(value);
 }
 
-const rhea::variable& Variable::impl() const
+const rhea::variable& Variable::variableImpl() const
 {
   return mVariable;
 }

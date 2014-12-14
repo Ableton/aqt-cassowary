@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include <ableton/cassowary/Solver.hpp>
+#include <ableton/cassowary/SolverBase.hpp>
 #include <ableton/build_system/Warnings.hpp>
 
 ABL_DISABLE_WARNINGS
@@ -18,21 +18,19 @@ class SolverItemError : public std::runtime_error
   using std::runtime_error::runtime_error;
 };
 
-class SolverItem : public QQuickItem
+class SolverItem : public SolverBase
 {
   Q_OBJECT
 
 public:
   SolverItem(QQuickItem* pParent = 0);
+  ~SolverItem();
 
-  Q_PROPERTY(ableton::cassowary::Solver* solver READ solver WRITE setSolver NOTIFY solverChanged)
-  Q_SIGNAL void solverChanged(QObject* solver);
+  Q_PROPERTY(ableton::cassowary::SolverBase* solver
+             MEMBER mSolver NOTIFY solverChanged)
+  Q_SIGNAL void solverChanged(ableton::cassowary::SolverBase* solver);
 
-  Solver* solver() const;
-  void setSolver(Solver* solver);
-
-  rhea::simplex_solver& solverImpl();
-  const rhea::simplex_solver& solverImpl() const;
+  std::shared_ptr<rhea::simplex_solver> solverImpl() override;
 
 protected:
   void add();
@@ -41,7 +39,12 @@ protected:
   virtual void removeIn(rhea::simplex_solver& impl) = 0;
 
 private:
-  QPointer<Solver> mSolver;
+  void updateSolver();
+
+  QPointer<SolverBase> mSolver;
+  QPointer<SolverBase> mParentSolver;
+  QPointer<SolverBase> mActualSolver;
+  std::shared_ptr<rhea::simplex_solver> mSolverImpl;
 };
 
 } // namespace cassowary
