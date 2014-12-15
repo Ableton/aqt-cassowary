@@ -4,6 +4,7 @@
 
 #include <ableton/cassowary/ConstraintItem.hpp>
 #include <ableton/cassowary/Variable.hpp>
+#include <limits>
 
 namespace ableton {
 namespace cassowary {
@@ -19,10 +20,19 @@ public:
              MEMBER mTarget NOTIFY targetChanged)
   Q_SIGNAL void targetChanged(ableton::cassowary::Variable* target);
 
+  Q_PROPERTY(double suggested
+             MEMBER mSuggested NOTIFY suggestedChanged)
+  Q_SIGNAL void suggestedChanged(double suggested);
+
+
   Q_INVOKABLE void suggest(double value);
+
+protected:
+  void addIn(rhea::simplex_solver& solver) override;
 
 private:
   QPointer<ableton::cassowary::Variable> mTarget;
+  double mSuggested = std::numeric_limits<double>::quiet_NaN();
 };
 
 } // namespace cassowary

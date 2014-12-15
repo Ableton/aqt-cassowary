@@ -26,14 +26,14 @@ public:
 
   Q_PROPERTY(bool when MEMBER mWhen NOTIFY whenChanged)
   Q_SIGNAL void whenChanged(bool when);
+  bool when() const { return mWhen; }
 
 protected:
   void set(std::shared_ptr<rhea::abstract_constraint> constraint);
-
-private:
   void addIn(rhea::simplex_solver& solver) override;
   void removeIn(rhea::simplex_solver& solver) override;
 
+private:
   Strength::Types mStrength;
   double mWeight;
   bool mWhen = true;

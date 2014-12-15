@@ -11,6 +11,9 @@ TestScene {
     id: scene
 
     TestCase {
+        id: case1
+        property var someVar
+
         Solver {
             Variable {
                 id: v1
@@ -18,6 +21,7 @@ TestScene {
             Edit {
                 id: e1
                 target: v1
+                suggested: case1.someVar
             }
             Stay {
                 target: v1
@@ -28,6 +32,13 @@ TestScene {
             e1.suggest(42)
             compare(v1.value, 42)
             e1.suggest(21)
+            compare(v1.value, 21)
+        }
+
+        function test_suggestingValuesThroughBinding() {
+            case1.someVar = 42
+            compare(v1.value, 42)
+            case1.someVar = 21
             compare(v1.value, 21)
         }
     }
