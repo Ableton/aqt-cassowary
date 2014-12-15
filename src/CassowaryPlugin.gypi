@@ -13,6 +13,8 @@
             'ableton/cassowary/Constraint.hpp',
             'ableton/cassowary/ConstraintItem.cpp',
             'ableton/cassowary/ConstraintItem.hpp',
+            'ableton/cassowary/Context.cpp',
+            'ableton/cassowary/Context.hpp',
             'ableton/cassowary/Contextual.cpp',
             'ableton/cassowary/Contextual.hpp',
             'ableton/cassowary/Edit.cpp',

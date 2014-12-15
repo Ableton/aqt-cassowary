@@ -30,8 +30,8 @@ public:
 
 protected:
   void set(std::shared_ptr<rhea::abstract_constraint> constraint);
-  void addIn(rhea::simplex_solver& solver) override;
-  void removeIn(rhea::simplex_solver& solver) override;
+  void addIn(Context& ctx) override;
+  void removeIn(Context& ctx) override;
 
 private:
   Strength::Types mStrength;

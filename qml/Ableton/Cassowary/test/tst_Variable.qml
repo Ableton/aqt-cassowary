@@ -28,4 +28,28 @@ TestScene {
             compare(spy.count, 1)
         }
     }
+
+    TestCase {
+        Solver {
+            Variable {
+                id: variable2
+            }
+            Constraint {
+                id: constraint
+            }
+        }
+
+        SignalSpy {
+            id: spy2
+            target: variable2
+            signalName: "valueChanged"
+        }
+
+        function test_notifiesOnResolvedChange() {
+            compare(spy2.count, 0)
+            constraint.expr = constraint.eq(variable2, 42)
+            compare(variable2.value, 42)
+            compare(spy2.count, 1)
+        }
+    }
 }

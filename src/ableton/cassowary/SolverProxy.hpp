@@ -13,8 +13,8 @@ class SolverProxy : public SolverItem
 
 public:
   SolverProxy(QQuickItem* pParent = 0);
-  void addIn(rhea::simplex_solver&) override {}
-  void removeIn(rhea::simplex_solver&) override {}
+  void addIn(Context&) override {}
+  void removeIn(Context&) override {}
 };
 
 } // namespace cassowary

@@ -2,18 +2,17 @@
 
 #pragma once
 
+#include <ableton/cassowary/SolverItem.hpp>
 #include <ableton/build_system/Warnings.hpp>
 
 ABL_DISABLE_WARNINGS
-#include <QtQuick/QQuickItem>
 #include <rhea/variable.hpp>
-#include <rhea/linear_expression.hpp>
 ABL_RESTORE_WARNINGS
 
 namespace ableton {
 namespace cassowary {
 
-class Variable : public QQuickItem
+class Variable : public SolverItem
 {
   Q_OBJECT
 
@@ -26,6 +25,10 @@ public:
   double value() const;
   void setValue(double value);
   const rhea::variable& variableImpl() const;
+
+protected:
+  void addIn(Context& ctx) override;
+  void removeIn(Context& ctx) override;
 
 private:
   rhea::variable mVariable;

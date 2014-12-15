@@ -35,8 +35,8 @@ public:
 protected:
   void add();
   void remove();
-  virtual void addIn(rhea::simplex_solver& impl) = 0;
-  virtual void removeIn(rhea::simplex_solver& impl) = 0;
+  virtual void addIn(Context& impl) = 0;
+  virtual void removeIn(Context& impl) = 0;
 
 private:
   void updateSolver();

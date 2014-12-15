@@ -6,7 +6,7 @@ namespace ableton {
 namespace cassowary {
 
 Variable::Variable(QQuickItem* pParent)
-  : QQuickItem(pParent)
+  : SolverItem(pParent)
 {
 }
 
@@ -24,6 +24,20 @@ void Variable::setValue(double value)
 const rhea::variable& Variable::variableImpl() const
 {
   return mVariable;
+}
+
+void Variable::addIn(Context& ctx)
+{
+  ctx.setVariableCallback(
+    mVariable,
+    [this](const rhea::variable&, rhea::simplex_solver&) {
+      Q_EMIT valueChanged(value());
+    });
+}
+
+void Variable::removeIn(Context& ctx)
+{
+  ctx.setVariableCallback(mVariable, nullptr);
 }
 
 } // namespace cassowary

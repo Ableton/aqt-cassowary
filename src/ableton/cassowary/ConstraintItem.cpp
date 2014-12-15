@@ -44,17 +44,17 @@ void ConstraintItem::set(std::shared_ptr<rhea::abstract_constraint> constraint)
   add();
 }
 
-void ConstraintItem::addIn(rhea::simplex_solver& solver)
+void ConstraintItem::addIn(Context& ctx)
 {
   if (mWhen && !mConstraint.is_nil()) {
-    solver.add_constraint(mConstraint);
+    ctx.solver().add_constraint(mConstraint);
   }
 }
 
-void ConstraintItem::removeIn(rhea::simplex_solver& solver)
+void ConstraintItem::removeIn(Context& ctx)
 {
   if (!mConstraint.is_nil()) {
-    solver.remove_constraint(mConstraint);
+    ctx.solver().remove_constraint(mConstraint);
   }
 }
 

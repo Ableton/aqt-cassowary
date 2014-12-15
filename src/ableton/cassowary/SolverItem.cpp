@@ -52,14 +52,14 @@ std::shared_ptr<Context> SolverItem::context()
 void SolverItem::add()
 {
   if (mContext) {
-    addIn(mContext->solver());
+    addIn(*mContext);
   }
 }
 
 void SolverItem::remove()
 {
   if (mContext) {
-    removeIn(mContext->solver());
+    removeIn(*mContext);
   }
 }
 

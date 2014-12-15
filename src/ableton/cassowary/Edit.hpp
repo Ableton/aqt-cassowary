@@ -28,7 +28,7 @@ public:
   Q_INVOKABLE void suggest(double value);
 
 protected:
-  void addIn(rhea::simplex_solver& solver) override;
+  void addIn(Context& solver) override;
 
 private:
   QPointer<ableton::cassowary::Variable> mTarget;

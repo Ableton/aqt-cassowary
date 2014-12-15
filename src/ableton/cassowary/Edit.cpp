@@ -21,9 +21,9 @@ Edit::Edit(QQuickItem* pParent)
   });
 }
 
-void Edit::addIn(rhea::simplex_solver& solver)
+void Edit::addIn(Context& ctx)
 {
-  ConstraintItem::addIn(solver);
+  ConstraintItem::addIn(ctx);
   if (!std::isnan(mSuggested)) {
     suggest(mSuggested);
   }
