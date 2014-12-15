@@ -32,8 +32,8 @@ void CassowaryPlugin::registerTypes(const char* uri)
     uri, 1, 0, "Constraint");
   qmlRegisterType<Stay>(
     uri, 1, 0, "Stay");
-  qmlRegisterUncreatableType<SolverBase>(
-    uri, 1, 0, "SolverBase", "Entschuldigung, just an abstract base!");
+  qmlRegisterUncreatableType<Contextual>(
+    uri, 1, 0, "Contextual", "Entschuldigung, just an abstract base!");
   qmlRegisterUncreatableType<Strength>(
     uri, 1, 0, "Strength", "Just an enum, dude!");
 }

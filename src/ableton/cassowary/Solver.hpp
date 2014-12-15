@@ -2,22 +2,23 @@
 
 #pragma once
 
-#include <ableton/cassowary/SolverBase.hpp>
+#include <ableton/cassowary/Contextual.hpp>
 
 namespace ableton {
 namespace cassowary {
 
-class Solver : public SolverBase
+class Solver : public Contextual
 {
   Q_OBJECT
 
 public:
   Solver(QQuickItem* pParent = 0);
   ~Solver() override;
-  std::shared_ptr<rhea::simplex_solver> solverImpl() override;
+
+  std::shared_ptr<Context> context() override;
 
 private:
-  std::shared_ptr<rhea::simplex_solver> mSolverImpl;
+  std::shared_ptr<Context> mContext;
 };
 
 } // namespace cassowary

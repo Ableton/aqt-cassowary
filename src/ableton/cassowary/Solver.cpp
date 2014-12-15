@@ -6,8 +6,8 @@ namespace ableton {
 namespace cassowary {
 
 Solver::Solver(QQuickItem* pParent)
-  : SolverBase(pParent)
-  , mSolverImpl(std::make_shared<rhea::simplex_solver>())
+  : Contextual(pParent)
+  , mContext(std::make_shared<Context>())
 {
 }
 
@@ -15,9 +15,9 @@ Solver::~Solver()
 {
 }
 
-std::shared_ptr<rhea::simplex_solver> Solver::solverImpl()
+std::shared_ptr<Context> Solver::context()
 {
-  return mSolverImpl;
+  return mContext;
 }
 
 } // namespace cassowary

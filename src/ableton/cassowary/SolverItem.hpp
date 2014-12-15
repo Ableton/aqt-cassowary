@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include <ableton/cassowary/SolverBase.hpp>
+#include <ableton/cassowary/Contextual.hpp>
 #include <ableton/build_system/Warnings.hpp>
 
 ABL_DISABLE_WARNINGS
@@ -18,7 +18,7 @@ class SolverItemError : public std::runtime_error
   using std::runtime_error::runtime_error;
 };
 
-class SolverItem : public SolverBase
+class SolverItem : public Contextual
 {
   Q_OBJECT
 
@@ -26,11 +26,11 @@ public:
   SolverItem(QQuickItem* pParent = 0);
   ~SolverItem();
 
-  Q_PROPERTY(ableton::cassowary::SolverBase* solver
+  Q_PROPERTY(ableton::cassowary::Contextual* solver
              MEMBER mSolver NOTIFY solverChanged)
-  Q_SIGNAL void solverChanged(ableton::cassowary::SolverBase* solver);
+  Q_SIGNAL void solverChanged(ableton::cassowary::Contextual* solver);
 
-  std::shared_ptr<rhea::simplex_solver> solverImpl() override;
+  std::shared_ptr<Context> context() override;
 
 protected:
   void add();
@@ -41,10 +41,10 @@ protected:
 private:
   void updateSolver();
 
-  QPointer<SolverBase> mSolver;
-  QPointer<SolverBase> mParentSolver;
-  QPointer<SolverBase> mActualSolver;
-  std::shared_ptr<rhea::simplex_solver> mSolverImpl;
+  QPointer<Contextual> mSolver;
+  QPointer<Contextual> mParent;
+  QPointer<Contextual> mContextual;
+  std::shared_ptr<Context> mContext;
 };
 
 } // namespace cassowary

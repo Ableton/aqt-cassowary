@@ -31,9 +31,9 @@ void Edit::addIn(rhea::simplex_solver& solver)
 
 void Edit::suggest(double value)
 {
-  auto impl = solverImpl();
-  if (when() && impl && mTarget) {
-    impl->suggest(mTarget->variableImpl(), value);
+  auto ctx = context();
+  if (when() && ctx && mTarget) {
+    ctx->solver().suggest(mTarget->variableImpl(), value);
   }
 }
 

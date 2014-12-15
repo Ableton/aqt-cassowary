@@ -2,25 +2,26 @@
 
 #pragma once
 
+#include <ableton/cassowary/Context.hpp>
 #include <ableton/build_system/Warnings.hpp>
 
 ABL_DISABLE_WARNINGS
 #include <QtQuick/QQuickItem>
-#include <rhea/simplex_solver.hpp>
 #include <memory>
 ABL_RESTORE_WARNINGS
 
 namespace ableton {
 namespace cassowary {
 
-class SolverBase : public QQuickItem
+class Contextual : public QQuickItem
 {
   Q_OBJECT
 
 public:
-  SolverBase(QQuickItem* pParent = 0);
-  virtual std::shared_ptr<rhea::simplex_solver> solverImpl() = 0;
-  Q_SIGNAL void solverImplChanged();
+  Contextual(QQuickItem* pParent = 0);
+
+  virtual std::shared_ptr<Context> context() = 0;
+  Q_SIGNAL void contextChanged();
 };
 
 } // namespace cassowary

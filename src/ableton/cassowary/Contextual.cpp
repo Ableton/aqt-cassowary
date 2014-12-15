@@ -1,11 +1,11 @@
 // Copyright: 2014, Ableton AG, Berlin, all rights reserved
 
-#include <ableton/cassowary/SolverBase.hpp>
+#include <ableton/cassowary/Contextual.hpp>
 
 namespace ableton {
 namespace cassowary {
 
-SolverBase::SolverBase(QQuickItem* pParent)
+Contextual::Contextual(QQuickItem* pParent)
   : QQuickItem(pParent)
 {}
 

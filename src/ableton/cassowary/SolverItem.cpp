@@ -6,7 +6,7 @@ namespace ableton {
 namespace cassowary {
 
 SolverItem::SolverItem(QQuickItem* pParent)
-  : SolverBase(pParent)
+  : Contextual(pParent)
 {
   connect(this, &QQuickItem::parentChanged, this, &SolverItem::updateSolver);
   connect(this, &SolverItem::solverChanged, this, &SolverItem::updateSolver);
@@ -15,54 +15,51 @@ SolverItem::SolverItem(QQuickItem* pParent)
 
 SolverItem::~SolverItem()
 {
-  disconnect();
 }
 
 void SolverItem::updateSolver()
 {
-  auto oldParentSolver = mParentSolver;
-  auto newParentSolver = dynamic_cast<SolverBase*>(parentItem());
-  auto actualSolver    = mSolver
-    ? static_cast<SolverBase*>(mSolver)
-    : newParentSolver;
-  auto solverImpl      = actualSolver
-    ? actualSolver->solverImpl()
-    : nullptr;
+  auto oldParent = mParent;
+  auto newParent = dynamic_cast<Contextual*>(parentItem());
+  auto contextual = mSolver ? static_cast<Contextual*>(mSolver) : newParent;
+  auto context = contextual ? contextual->context() : nullptr;
 
-  if (actualSolver != mActualSolver) {
-    if (mActualSolver)
-      disconnect(mActualSolver, &SolverBase::solverImplChanged,
+  if (contextual != mContextual) {
+    if (mContextual) {
+      disconnect(mContextual, &Contextual::contextChanged,
                this, &SolverItem::updateSolver);
-    if (actualSolver)
-      connect(actualSolver, &SolverBase::solverImplChanged,
+    }
+    if (contextual) {
+      connect(contextual, &Contextual::contextChanged,
               this, &SolverItem::updateSolver);
-    mActualSolver = actualSolver;
+    }
+    mContextual = contextual;
   }
 
-  if (solverImpl != mSolverImpl) {
+  if (context != mContext) {
     remove();
-    mSolverImpl = solverImpl;
+    mContext = context;
     add();
-    Q_EMIT solverImplChanged();
+    Q_EMIT contextChanged();
   }
 }
 
-std::shared_ptr<rhea::simplex_solver> SolverItem::solverImpl()
+std::shared_ptr<Context> SolverItem::context()
 {
-  return mSolverImpl;
+  return mContext;
 }
 
 void SolverItem::add()
 {
-  if (mSolverImpl) {
-    addIn(*mSolverImpl);
+  if (mContext) {
+    addIn(mContext->solver());
   }
 }
 
 void SolverItem::remove()
 {
-  if (mSolverImpl) {
-    removeIn(*mSolverImpl);
+  if (mContext) {
+    removeIn(mContext->solver());
   }
 }
 
