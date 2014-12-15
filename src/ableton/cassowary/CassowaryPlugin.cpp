@@ -2,6 +2,7 @@
 
 #include <ableton/cassowary/CassowaryPlugin.hpp>
 #include <ableton/cassowary/Constraint.hpp>
+#include <ableton/cassowary/Edit.hpp>
 #include <ableton/cassowary/Solver.hpp>
 #include <ableton/cassowary/SolverProxy.hpp>
 #include <ableton/cassowary/Stay.hpp>
@@ -19,6 +20,8 @@ namespace cassowary {
 
 void CassowaryPlugin::registerTypes(const char* uri)
 {
+  qmlRegisterType<Edit>(
+    uri, 1, 0, "Edit");
   qmlRegisterType<Solver>(
     uri, 1, 0, "Solver");
   qmlRegisterType<SolverProxy>(
