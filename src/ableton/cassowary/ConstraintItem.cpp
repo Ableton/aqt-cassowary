@@ -25,6 +25,14 @@ ConstraintItem::ConstraintItem(QQuickItem* pParent,
       mConstraint.change_weight(mWeight);
     add();
   });
+
+  connect(this, &ConstraintItem::whenChanged, [this](bool when) {
+    if (when) {
+      add();
+    } else {
+      remove();
+    }
+  });
 }
 
 void ConstraintItem::set(std::shared_ptr<rhea::abstract_constraint> constraint)
@@ -38,7 +46,7 @@ void ConstraintItem::set(std::shared_ptr<rhea::abstract_constraint> constraint)
 
 void ConstraintItem::addIn(rhea::simplex_solver& solver)
 {
-  if (!mConstraint.is_nil()) {
+  if (mWhen && !mConstraint.is_nil()) {
     solver.add_constraint(mConstraint);
   }
 }

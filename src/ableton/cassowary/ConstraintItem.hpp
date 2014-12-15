@@ -24,6 +24,9 @@ public:
   Q_PROPERTY(double weight MEMBER mWeight NOTIFY weightChanged)
   Q_SIGNAL void weightChanged(double weight);
 
+  Q_PROPERTY(bool when MEMBER mWhen NOTIFY whenChanged)
+  Q_SIGNAL void whenChanged(bool when);
+
 protected:
   void set(std::shared_ptr<rhea::abstract_constraint> constraint);
 
@@ -33,6 +36,7 @@ private:
 
   Strength::Types mStrength;
   double mWeight;
+  bool mWhen = true;
   rhea::constraint mConstraint;
 };
 

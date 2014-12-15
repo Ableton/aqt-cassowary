@@ -42,9 +42,20 @@ TestScene {
         Constraint { id: c2; solver: s2; expr: eq(v2, 42) }
         Constraint { id: c3; solver: s2; expr: eq(v2, 21);
                      strength: Strength.Strong; }
+
         function test_strengths() {
+            c2.when = true
+            c2.strength = Strength.Strong
             compare(v2.value, 42)
             c2.strength = Strength.Weak
+            compare(v2.value, 21)
+        }
+
+        function test_disable() {
+            c2.when = true
+            c2.strength = Strength.Strong
+            compare(v2.value, 42)
+            c2.when = false
             compare(v2.value, 21)
         }
     }
