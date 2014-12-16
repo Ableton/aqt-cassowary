@@ -14,47 +14,56 @@ ConstraintItem::ConstraintItem(QQuickItem* pParent,
 {
   connect(this, &ConstraintItem::strengthChanged, [this](Strength::Types) {
     remove();
-    if (!mConstraint.is_nil())
-      mConstraint.change_strength(Strength::impl(mStrength));
+    defer([this] {
+      if (!mConstraint.is_nil()) {
+        mConstraint.change_strength(Strength::impl(mStrength));
+      }
+    });
     add();
   });
 
   connect(this, &ConstraintItem::weightChanged, [this](double) {
     remove();
-    if (!mConstraint.is_nil())
-      mConstraint.change_weight(mWeight);
+    defer([this] {
+      if (!mConstraint.is_nil()) {
+        mConstraint.change_weight(mWeight);
+      }
+    });
     add();
   });
 
   connect(this, &ConstraintItem::whenChanged, [this](bool when) {
-    if (when) {
-      add();
-    } else {
-      remove();
-    }
+    remove();
+    defer ([this, when] {
+      mActualWhen = when;
+    });
+    add();
   });
 }
 
 void ConstraintItem::set(std::shared_ptr<rhea::abstract_constraint> constraint)
 {
   remove();
-  mConstraint = std::move(constraint);
-  mConstraint.change_weight(mWeight);
-  mConstraint.change_strength(Strength::impl(mStrength));
+  defer([this, constraint] {
+    auto cts = constraint;
+    mConstraint = std::move(cts);
+    mConstraint.change_weight(mWeight);
+    mConstraint.change_strength(Strength::impl(mStrength));
+  });
   add();
 }
 
 void ConstraintItem::addIn(Context& ctx)
 {
-  if (mWhen && !mConstraint.is_nil()) {
-    ctx.solver().add_constraint(mConstraint);
+  if (when() && !mConstraint.is_nil()) {
+      ctx.solver().add_constraint(mConstraint);
   }
 }
 
 void ConstraintItem::removeIn(Context& ctx)
 {
   if (!mConstraint.is_nil()) {
-    ctx.solver().remove_constraint(mConstraint);
+      ctx.solver().remove_constraint(mConstraint);
   }
 }
 

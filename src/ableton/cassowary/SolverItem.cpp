@@ -38,9 +38,13 @@ void SolverItem::updateSolver()
 
   if (context != mContext) {
     remove();
-    mContext = context;
+    defer([this, context] {
+      mContext = context;
+    });
     add();
-    Q_EMIT contextChanged();
+    defer([this] {
+      Q_EMIT contextChanged();
+    });
   }
 }
 
@@ -51,16 +55,20 @@ std::shared_ptr<Context> SolverItem::context()
 
 void SolverItem::add()
 {
-  if (mContext) {
-    addIn(*mContext);
-  }
+  defer([this] {
+    if (mContext) {
+      addIn(*mContext);
+    }
+  });
 }
 
 void SolverItem::remove()
 {
-  if (mContext) {
-    removeIn(*mContext);
-  }
+  defer([this] {
+    if (mContext) {
+      removeIn(*mContext);
+    }
+  });
 }
 
 } // namespace cassowary

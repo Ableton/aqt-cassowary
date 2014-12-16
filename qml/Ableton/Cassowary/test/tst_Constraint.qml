@@ -32,6 +32,7 @@ TestScene {
 
         function test_constraints(data) {
             c1.expr = data.expr
+            c1.commit()
             compare(v1.value, data.value)
         }
     }
@@ -46,16 +47,20 @@ TestScene {
         function test_strengths() {
             c2.when = true
             c2.strength = Strength.Strong
+            c2.commit()
             compare(v2.value, 42)
             c2.strength = Strength.Weak
+            c2.commit()
             compare(v2.value, 21)
         }
 
         function test_disable() {
             c2.when = true
             c2.strength = Strength.Strong
+            c2.commit()
             compare(v2.value, 42)
             c2.when = false
+            c2.commit()
             compare(v2.value, 21)
         }
     }
@@ -65,6 +70,18 @@ TestScene {
         function test_defaults() {
             compare(c4.strength, Strength.Required)
             compare(c4.weight, 1)
+        }
+    }
+
+    TestCase {
+        Solver {
+            Variable { id: v4 }
+            Constraint { expr: eq(v4, 42) }
+        }
+
+        function test_commitsAsSoonAsEventLoopIterates() {
+            wait(0)
+            compare(v4.value, 42)
         }
     }
 }

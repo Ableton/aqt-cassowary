@@ -55,6 +55,7 @@ TestScene {
         }
 
         function test_solverCanBeInheritedFromParentArbitrarily() {
+            s1.commit()
             compare(v2.value, 42)
         }
     }

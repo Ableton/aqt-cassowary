@@ -24,11 +24,11 @@ public:
              MEMBER mSuggested NOTIFY suggestedChanged)
   Q_SIGNAL void suggestedChanged(double suggested);
 
-
   Q_INVOKABLE void suggest(double value);
 
 protected:
   void addIn(Context& solver) override;
+  void removeIn(Context& solver) override;
 
 private:
   QPointer<ableton::cassowary::Variable> mTarget;

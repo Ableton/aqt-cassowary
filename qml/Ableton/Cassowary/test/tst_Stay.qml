@@ -12,20 +12,24 @@ TestScene {
 
     TestCase {
         Solver { id: s1 }
-        Variable { id: v1 }
+        Variable {
+            id: v1
+        }
         Stay {
-            id: st1; solver: s1;
+            id: st1; solver: s1
             target: v1; strength: Strength.Strong
         }
         Constraint {
-            id: c1; solver: s1;
+            id: c1; solver: s1
             expr: eq(v1, 42); strength: Strength.Weak
         }
 
         function test_variableStay() {
-            compare(v1.value, 42)
+            c1.commit()
+            compare(v1.value, 0)
             c1.expr = c1.eq(v1, 21)
-            compare(v1.value, 42)
+            c1.commit()
+            compare(v1.value, 0)
         }
     }
 

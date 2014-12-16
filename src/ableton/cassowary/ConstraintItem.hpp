@@ -26,9 +26,9 @@ public:
 
   Q_PROPERTY(bool when MEMBER mWhen NOTIFY whenChanged)
   Q_SIGNAL void whenChanged(bool when);
-  bool when() const { return mWhen; }
 
 protected:
+  bool when() const { return mActualWhen; }
   void set(std::shared_ptr<rhea::abstract_constraint> constraint);
   void addIn(Context& ctx) override;
   void removeIn(Context& ctx) override;
@@ -37,6 +37,7 @@ private:
   Strength::Types mStrength;
   double mWeight;
   bool mWhen = true;
+  bool mActualWhen = true;
   rhea::constraint mConstraint;
 };
 

@@ -48,6 +48,7 @@ TestScene {
         function test_notifiesOnResolvedChange() {
             compare(spy2.count, 0)
             constraint.expr = constraint.eq(variable2, 42)
+            constraint.commit()
             compare(variable2.value, 42)
             compare(spy2.count, 1)
         }

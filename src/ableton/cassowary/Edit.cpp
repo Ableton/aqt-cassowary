@@ -29,12 +29,20 @@ void Edit::addIn(Context& ctx)
   }
 }
 
+void Edit::removeIn(Context& ctx)
+{
+  ConstraintItem::removeIn(ctx);
+}
+
 void Edit::suggest(double value)
 {
-  auto ctx = context();
-  if (when() && ctx && mTarget) {
-    ctx->solver().suggest(mTarget->variableImpl(), value);
-  }
+  defer([this, value] {
+    auto ctx = context();
+    if (when() && ctx && mTarget) {
+      auto& var = mTarget->variableImpl();
+      ctx->solver().suggest(var, value);
+    }
+  });
 }
 
 } // namespace cassowary

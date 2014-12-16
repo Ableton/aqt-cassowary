@@ -30,15 +30,19 @@ TestScene {
 
         function test_suggestingValues() {
             e1.suggest(42)
+            e1.commit()
             compare(v1.value, 42)
             e1.suggest(21)
+            e1.commit()
             compare(v1.value, 21)
         }
 
         function test_suggestingValuesThroughBinding() {
             case1.someVar = 42
+            e1.commit()
             compare(v1.value, 42)
             case1.someVar = 21
+            e1.commit()
             compare(v1.value, 21)
         }
     }

@@ -22,6 +22,10 @@ public:
 
   virtual std::shared_ptr<Context> context() = 0;
   Q_SIGNAL void contextChanged();
+
+  Q_INVOKABLE void commit();
+
+  void defer(Context::DeferredCallback cb);
 };
 
 } // namespace cassowary
