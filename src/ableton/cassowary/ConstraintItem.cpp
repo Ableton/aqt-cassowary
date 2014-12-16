@@ -56,14 +56,24 @@ void ConstraintItem::set(std::shared_ptr<rhea::abstract_constraint> constraint)
 void ConstraintItem::addIn(Context& ctx)
 {
   if (when() && !mConstraint.is_nil()) {
+    log("Add:", mConstraint);
+    try {
       ctx.solver().add_constraint(mConstraint);
+    } catch (const rhea::required_failure&) {
+      log("Required constraint can't be satisfied:", mConstraint);
+    }
   }
 }
 
 void ConstraintItem::removeIn(Context& ctx)
 {
   if (!mConstraint.is_nil()) {
+    try {
+      log("Remove:", mConstraint);
       ctx.solver().remove_constraint(mConstraint);
+    } catch (const rhea::constraint_not_found&) {
+      log("Constraint not found:", mConstraint);
+    }
   }
 }
 

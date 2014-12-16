@@ -51,6 +51,7 @@
                 'QtPluginSettings',
                 'XQtQml',
                 'XQtQuick',
+                'XBoostLibCommons'
             ],
 
             'include_dirs': [

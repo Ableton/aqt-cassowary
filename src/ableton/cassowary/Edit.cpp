@@ -40,6 +40,7 @@ void Edit::suggest(double value)
     auto ctx = context();
     if (when() && ctx && mTarget) {
       auto& var = mTarget->variableImpl();
+      log("Suggest:", var, "=", value);
       ctx->solver().suggest(var, value);
     }
   });

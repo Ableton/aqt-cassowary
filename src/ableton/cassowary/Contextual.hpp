@@ -26,6 +26,14 @@ public:
   Q_INVOKABLE void commit();
 
   void defer(Context::DeferredCallback cb);
+
+  template <typename ...Args>
+  void log(Args&&... args) {
+    auto ctx = context();
+    if (ctx) {
+      ctx->log(std::forward<Args>(args)...);
+    }
+  }
 };
 
 } // namespace cassowary

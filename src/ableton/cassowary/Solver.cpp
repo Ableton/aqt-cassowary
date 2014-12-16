@@ -15,6 +15,17 @@ Solver::~Solver()
 {
 }
 
+bool Solver::debug() const
+{
+  return mContext->debug;
+}
+
+void Solver::setDebug(bool debug)
+{
+  mContext->debug = debug;
+  Q_EMIT debugChanged(debug);
+}
+
 std::shared_ptr<Context> Solver::context()
 {
   return mContext;
