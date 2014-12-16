@@ -24,7 +24,6 @@ struct ContextError : std::runtime_error
 class Context
 {
 public:
-  using VariableChangeCallback = rhea::simplex_solver::variable_cb;
   using DeferredCallback = std::function<void()>;
 
   bool debug = false;
@@ -35,10 +34,6 @@ public:
 
   void defer(DeferredCallback fn);
   void commit();
-
-  void setVariableCallback(
-    rhea::variable variable,
-    VariableChangeCallback callback);
 
   template <typename ...Args>
   void log(Args&&... args)
@@ -61,7 +56,6 @@ private:
 
   std::queue<DeferredCallback> mDeferred;
   QTimer mTimer;
-  std::unordered_map<rhea::variable, VariableChangeCallback> mVariableCallbacks;
   rhea::simplex_solver mSolver;
 };
 

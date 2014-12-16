@@ -7,6 +7,9 @@ namespace cassowary {
 
 Variable::Variable(QQuickItem* pParent)
   : SolverItem(pParent)
+  , mVariable([this] (double value) {
+      Q_EMIT valueChanged(value);
+    })
 {
   connect(this, &Variable::initialChanged, [this] (double initial) {
     auto ctx = context();
@@ -14,7 +17,6 @@ Variable::Variable(QQuickItem* pParent)
       log("Variable initial value set after initialization:", mVariable, initial);
     } else {
       mVariable.change_value(initial);
-      Q_EMIT valueChanged(initial);
     }
   });
 }
@@ -27,20 +29,6 @@ double Variable::value() const
 const rhea::variable& Variable::variableImpl() const
 {
   return mVariable;
-}
-
-void Variable::addIn(Context& ctx)
-{
-  ctx.setVariableCallback(
-    mVariable,
-    [this](const rhea::variable&, rhea::simplex_solver&) {
-      Q_EMIT valueChanged(value());
-    });
-}
-
-void Variable::removeIn(Context& ctx)
-{
-  ctx.setVariableCallback(mVariable, nullptr);
 }
 
 } // namespace cassowary
