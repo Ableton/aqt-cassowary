@@ -19,11 +19,13 @@ class Variable : public SolverItem
 public:
   Variable(QQuickItem* pParent = 0);
 
-  Q_PROPERTY(double value READ value WRITE setValue NOTIFY valueChanged)
+  Q_PROPERTY(double value READ value NOTIFY valueChanged)
+  double value() const;
   Q_SIGNAL void valueChanged(double value);
 
-  double value() const;
-  void setValue(double value);
+  Q_PROPERTY(double initial MEMBER mInitial NOTIFY initialChanged)
+  Q_SIGNAL void initialChanged(double initial);
+
   const rhea::variable& variableImpl() const;
 
 protected:
@@ -32,6 +34,7 @@ protected:
 
 private:
   rhea::variable mVariable;
+  double mInitial = 0.0;
 };
 
 } // namespace cassowary

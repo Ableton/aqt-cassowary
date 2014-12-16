@@ -84,4 +84,24 @@ TestScene {
             compare(v4.value, 42)
         }
     }
+
+    TestCase {
+        Solver {
+            Variable { id: v5; initial: 30 }
+            Constraint { expr: geq(v5, 10) }
+            Constraint { expr: leq(v5, 20) }
+        }
+
+        function test_usesInitialValue() {
+            wait(0)
+            compare(v5.value, 20)
+        }
+
+        function test_changingInitialAfterInitializationHasNoEffect() {
+            wait(0)
+            v5.initial = 15
+            wait(0)
+            compare(v5.value, 20)
+        }
+    }
 }

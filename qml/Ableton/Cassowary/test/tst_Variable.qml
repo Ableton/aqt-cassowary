@@ -21,10 +21,11 @@ TestScene {
             signalName: "valueChanged"
         }
 
-        function test_setValue() {
+        function test_setInitial() {
             compare(spy.count, 0)
-            variable.value = 10
+            variable.initial = 10
             compare(variable.value, 10)
+            compare(variable.initial, 10)
             compare(spy.count, 1)
         }
     }

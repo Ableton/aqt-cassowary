@@ -8,17 +8,20 @@ namespace cassowary {
 Variable::Variable(QQuickItem* pParent)
   : SolverItem(pParent)
 {
+  connect(this, &Variable::initialChanged, [this] (double initial) {
+    auto ctx = context();
+    if (ctx && ctx->solver().contains_variable(mVariable)) {
+      log("Variable initial value set after initialization:", mVariable, initial);
+    } else {
+      mVariable.change_value(initial);
+      Q_EMIT valueChanged(initial);
+    }
+  });
 }
 
 double Variable::value() const
 {
   return mVariable.value();
-}
-
-void Variable::setValue(double value)
-{
-  mVariable.set_value(value);
-  Q_EMIT valueChanged(value);
 }
 
 const rhea::variable& Variable::variableImpl() const
