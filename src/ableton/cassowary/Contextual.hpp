@@ -24,6 +24,7 @@ public:
   Q_SIGNAL void contextChanged();
 
   Q_INVOKABLE void commit();
+  Q_INVOKABLE void defer(QJSValue cb);
 
   void defer(Context::DeferredCallback cb);
 

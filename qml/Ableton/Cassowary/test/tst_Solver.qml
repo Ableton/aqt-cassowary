@@ -20,5 +20,17 @@ TestScene {
             TestUtils.withComponent(solver, null, {}, function (solver) {
             })
         }
+
+        function text_canDeferJavaScriptCall() {
+            TestUtils.withComponent(solver, null, {}, function (solver) {
+                var count = 0
+                solver.defer(function () {
+                    ++count
+                })
+                compare(count, 0)
+                solver.commit()
+                compare(count, 1)
+            })
+        }
     }
 }

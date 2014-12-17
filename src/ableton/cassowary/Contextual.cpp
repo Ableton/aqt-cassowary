@@ -14,6 +14,11 @@ Contextual::Contextual(QQuickItem* pParent)
   : QQuickItem(pParent)
 {}
 
+void Contextual::defer(QJSValue cb)
+{
+  defer([cb]() mutable { cb.call(); });
+}
+
 void Contextual::defer(Context::DeferredCallback cb)
 {
   auto ctx = context();
