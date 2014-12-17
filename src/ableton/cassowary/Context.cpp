@@ -38,6 +38,7 @@ void Context::commit()
 
   if (resolve) {
     mSolver.solve();
+    mSolver.resolve();
   }
 }
 

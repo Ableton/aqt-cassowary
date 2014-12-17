@@ -14,19 +14,19 @@ namespace cassowary {
 Edit::Edit(QQuickItem* pParent)
   : ConstraintItem(pParent, Strength::Strong, 1.0)
 {
+  connect(this, &Edit::targetChanged, [this](Variable* target) {
+    set(std::make_shared<rhea::edit_constraint>(target->variableImpl()));
+  });
+
   connect(this, &Edit::suggestedChanged, [this](double suggested) {
-    if (!std::isnan(suggested)) {
-      suggest(suggested);
-    }
+    suggest(suggested);
   });
 }
 
 void Edit::addIn(Context& ctx)
 {
   ConstraintItem::addIn(ctx);
-  if (!std::isnan(mSuggested)) {
-    suggest(mSuggested);
-  }
+  suggest(mSuggested);
 }
 
 void Edit::removeIn(Context& ctx)
@@ -36,14 +36,16 @@ void Edit::removeIn(Context& ctx)
 
 void Edit::suggest(double value)
 {
-  defer([this, value] {
-    auto ctx = context();
-    if (when() && ctx && mTarget) {
-      auto& var = mTarget->variableImpl();
-      log("Suggest:", var, "=", value);
-      ctx->solver().suggest(var, value);
-    }
-  });
+  if (!std::isnan(value)) {
+    defer([this, value] {
+      auto ctx = context();
+      if (when() && ctx && mTarget) {
+        auto& var = mTarget->variableImpl();
+        log("Suggest:", var, "=", value);
+        ctx->solver().suggest_value(var, value);
+      }
+    });
+  }
 }
 
 } // namespace cassowary
