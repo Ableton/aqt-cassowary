@@ -5,19 +5,30 @@
 namespace ableton {
 namespace cassowary {
 
+namespace {
+
+template <typename ObjectPtrT, typename ObjectPtrU, typename ...Args>
+void reconnect(ObjectPtrT oldSrc, ObjectPtrU newSrc, Args&& ...args)
+{
+  if (oldSrc) {
+    QObject::disconnect(oldSrc, std::forward<Args>(args)...);
+  }
+  if (newSrc) {
+    QObject::connect(newSrc, std::forward<Args>(args)...);
+  }
+}
+
+} // anonymous namespace
+
 SolverItem::SolverItem(QQuickItem* pParent)
   : Contextual(pParent)
 {
-  connect(this, &QQuickItem::parentChanged, this, &SolverItem::updateSolver);
-  connect(this, &SolverItem::solverChanged, this, &SolverItem::updateSolver);
-  updateSolver();
+  connect(this, &QQuickItem::parentChanged, this, &SolverItem::updateContext);
+  connect(this, &SolverItem::solverChanged, this, &SolverItem::updateContext);
+  updateContext();
 }
 
-SolverItem::~SolverItem()
-{
-}
-
-void SolverItem::updateSolver()
+void SolverItem::updateContext()
 {
   auto oldParent = mParent;
   auto newParent = dynamic_cast<Contextual*>(parentItem());
@@ -25,23 +36,15 @@ void SolverItem::updateSolver()
   auto context = contextual ? contextual->context() : nullptr;
 
   if (contextual != mContextual) {
-    if (mContextual) {
-      disconnect(mContextual, &Contextual::contextChanged,
-               this, &SolverItem::updateSolver);
-    }
-    if (contextual) {
-      connect(contextual, &Contextual::contextChanged,
-              this, &SolverItem::updateSolver);
-    }
+    reconnect(mContextual, contextual,  &Contextual::contextChanged,
+              this, &SolverItem::updateContext);
     mContextual = contextual;
   }
 
   if (context != mContext) {
-    remove();
-    defer([this, context] {
+    update([this, context] {
       mContext = context;
     });
-    add();
     defer([this] {
       Q_EMIT contextChanged();
     });
@@ -69,6 +72,13 @@ void SolverItem::remove()
       removeIn(*mContext);
     }
   });
+}
+
+void SolverItem::update(Context::DeferredCallback cb)
+{
+  remove();
+  defer(std::move(cb));
+  add();
 }
 
 } // namespace cassowary

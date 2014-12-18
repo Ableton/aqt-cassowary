@@ -13,45 +13,37 @@ ConstraintItem::ConstraintItem(QQuickItem* pParent,
   , mWeight(weight)
 {
   connect(this, &ConstraintItem::strengthChanged, [this](Strength::Types) {
-    remove();
-    defer([this] {
+    update([this] {
       if (!mConstraint.is_nil()) {
         mConstraint.change_strength(Strength::impl(mStrength));
       }
     });
-    add();
   });
 
   connect(this, &ConstraintItem::weightChanged, [this](double) {
-    remove();
-    defer([this] {
+    update([this] {
       if (!mConstraint.is_nil()) {
         mConstraint.change_weight(mWeight);
       }
     });
-    add();
   });
 
   connect(this, &ConstraintItem::whenChanged, [this](bool when) {
-    remove();
-    defer ([this, when] {
+    update ([this, when] {
       mActualWhen = when;
     });
-    add();
   });
 }
 
 void ConstraintItem::set(std::shared_ptr<rhea::abstract_constraint> constraint)
 {
-  remove();
-  defer([this, constraint]() mutable {
+  update([this, constraint]() mutable {
     mConstraint = std::move(constraint);
     if (!mConstraint.is_nil()) {
       mConstraint.change_weight(mWeight);
       mConstraint.change_strength(Strength::impl(mStrength));
     }
   });
-  add();
 }
 
 void ConstraintItem::addIn(Context& ctx)

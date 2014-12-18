@@ -24,7 +24,6 @@ class SolverItem : public Contextual
 
 public:
   SolverItem(QQuickItem* pParent = 0);
-  ~SolverItem();
 
   Q_PROPERTY(ableton::cassowary::Contextual* solver
              MEMBER mSolver NOTIFY solverChanged)
@@ -35,11 +34,13 @@ public:
 protected:
   void add();
   void remove();
+  void update(Context::DeferredCallback cb);
+
   virtual void addIn(Context& impl) = 0;
   virtual void removeIn(Context& impl) = 0;
 
 private:
-  void updateSolver();
+  void updateContext();
 
   QPointer<Contextual> mSolver;
   QPointer<Contextual> mParent;
