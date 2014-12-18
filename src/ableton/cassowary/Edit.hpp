@@ -2,23 +2,18 @@
 
 #pragma once
 
-#include <ableton/cassowary/ConstraintItem.hpp>
-#include <ableton/cassowary/Variable.hpp>
+#include <ableton/cassowary/TargetedItem.hpp>
 #include <limits>
 
 namespace ableton {
 namespace cassowary {
 
-class Edit : public ConstraintItem
+class Edit : public TargetedItem
 {
   Q_OBJECT
 
 public:
   Edit(QQuickItem* pParent=0);
-
-  Q_PROPERTY(ableton::cassowary::Variable* target
-             MEMBER mTarget NOTIFY targetChanged)
-  Q_SIGNAL void targetChanged(ableton::cassowary::Variable* target);
 
   Q_PROPERTY(double suggested
              MEMBER mSuggested NOTIFY suggestedChanged)
@@ -31,7 +26,6 @@ protected:
   void removeIn(Context& solver) override;
 
 private:
-  QPointer<ableton::cassowary::Variable> mTarget;
   double mSuggested = std::numeric_limits<double>::quiet_NaN();
 };
 

@@ -54,4 +54,17 @@ TestScene {
             compare(e2.weight, 1)
         }
     }
+
+    TestCase {
+        Solver {
+            Variable {
+                id: v2
+                Edit { suggested: 42 }
+            }
+        }
+        function test_canFindTargetFromParent() {
+            v2.commit()
+            compare(v2.value, 42)
+        }
+    }
 }

@@ -40,4 +40,20 @@ TestScene {
             compare(s2.weight, 1)
         }
     }
+
+    TestCase {
+        Solver {
+            Variable {
+                id: v2
+                initial: 42
+                Stay {}
+            }
+            Constraint { expr: leq(v2, 100) }
+        }
+
+        function test_canFindTargetFromParent() {
+            v2.commit()
+            compare(v2.value, 42)
+        }
+    }
 }

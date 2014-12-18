@@ -12,10 +12,12 @@ namespace ableton {
 namespace cassowary {
 
 Edit::Edit(QQuickItem* pParent)
-  : ConstraintItem(pParent, Strength::Strong, 1.0)
+  : TargetedItem(pParent, Strength::Strong, 1.0)
 {
-  connect(this, &Edit::targetChanged, [this](Variable* target) {
-    set(std::make_shared<rhea::edit_constraint>(target->variableImpl()));
+  connect(this, &Edit::actualTargetChanged, [this](Variable* target) {
+      set(target
+          ? std::make_shared<rhea::edit_constraint>(target->variableImpl())
+          : nullptr);
   });
 
   connect(this, &Edit::suggestedChanged, [this](double suggested) {
@@ -39,8 +41,9 @@ void Edit::suggest(double value)
   if (!std::isnan(value)) {
     defer([this, value] {
       auto ctx = context();
-      if (when() && ctx && mTarget) {
-        auto& var = mTarget->variableImpl();
+      auto target = actualTarget();
+      if (when() && ctx && target) {
+        auto& var = target->variableImpl();
         log("Suggest:", var, "=", value);
         ctx->solver().suggest_value(var, value);
       }

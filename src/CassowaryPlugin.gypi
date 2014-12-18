@@ -31,6 +31,8 @@
             'ableton/cassowary/Strength.hpp',
             'ableton/cassowary/Variable.cpp',
             'ableton/cassowary/Variable.hpp',
+            'ableton/cassowary/TargetedItem.cpp',
+            'ableton/cassowary/TargetedItem.hpp',
             'ableton/estd/functional.hpp',
         ],
     },

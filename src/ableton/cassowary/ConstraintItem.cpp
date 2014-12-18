@@ -44,11 +44,12 @@ ConstraintItem::ConstraintItem(QQuickItem* pParent,
 void ConstraintItem::set(std::shared_ptr<rhea::abstract_constraint> constraint)
 {
   remove();
-  defer([this, constraint] {
-    auto cts = constraint;
-    mConstraint = std::move(cts);
-    mConstraint.change_weight(mWeight);
-    mConstraint.change_strength(Strength::impl(mStrength));
+  defer([this, constraint]() mutable {
+    mConstraint = std::move(constraint);
+    if (!mConstraint.is_nil()) {
+      mConstraint.change_weight(mWeight);
+      mConstraint.change_strength(Strength::impl(mStrength));
+    }
   });
   add();
 }
