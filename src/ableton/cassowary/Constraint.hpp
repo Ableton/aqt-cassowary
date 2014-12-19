@@ -2,12 +2,12 @@
 
 #pragma once
 
-#include <ableton/cassowary/ConstraintItem.hpp>
+#include <ableton/cassowary/ConstraintBase.hpp>
 
 namespace ableton {
 namespace cassowary {
 
-class Constraint : public ConstraintItem
+class Constraint : public ConstraintBase
 {
   Q_OBJECT
 

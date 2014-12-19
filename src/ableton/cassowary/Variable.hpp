@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include <ableton/cassowary/SolverItem.hpp>
+#include <ableton/cassowary/Contextual.hpp>
 #include <ableton/build_system/Warnings.hpp>
 
 ABL_DISABLE_WARNINGS
@@ -12,7 +12,7 @@ ABL_RESTORE_WARNINGS
 namespace ableton {
 namespace cassowary {
 
-class Variable : public SolverItem
+class Variable : public Contextual
 {
   Q_OBJECT
 

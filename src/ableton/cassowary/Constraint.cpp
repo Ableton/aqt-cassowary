@@ -121,7 +121,7 @@ struct Constraint::Setter
 };
 
 Constraint::Constraint(QQuickItem* pParent)
-  : ConstraintItem(pParent)
+  : ConstraintBase(pParent)
 {
   connect(this, &Constraint::exprChanged, [this](QVariant expr) {
     try {

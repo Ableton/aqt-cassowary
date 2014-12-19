@@ -2,18 +2,18 @@
 
 #pragma once
 
-#include <ableton/cassowary/SolverItem.hpp>
+#include <ableton/cassowary/Contextual.hpp>
 #include <ableton/cassowary/Strength.hpp>
 
 namespace ableton {
 namespace cassowary {
 
-class ConstraintItem : public SolverItem
+class ConstraintBase : public Contextual
 {
   Q_OBJECT
 
 public:
-  ConstraintItem(QQuickItem* pParent = 0,
+  ConstraintBase(QQuickItem* pParent = 0,
                  Strength::Types strength = Strength::Required,
                  double weight = 1.0);
 

@@ -2,13 +2,13 @@
 
 #pragma once
 
-#include <ableton/cassowary/TargetedItem.hpp>
+#include <ableton/cassowary/Targeted.hpp>
 #include <ableton/cassowary/Variable.hpp>
 
 namespace ableton {
 namespace cassowary {
 
-class Stay : public TargetedItem
+class Stay : public Targeted
 {
   Q_OBJECT
 

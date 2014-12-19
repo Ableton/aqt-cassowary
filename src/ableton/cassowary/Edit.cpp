@@ -12,7 +12,7 @@ namespace ableton {
 namespace cassowary {
 
 Edit::Edit(QQuickItem* pParent)
-  : TargetedItem(pParent, Strength::Strong, 1.0)
+  : Targeted(pParent, Strength::Strong, 1.0)
 {
   connect(this, &Edit::actualTargetChanged, [this](Variable* target) {
       set(target
@@ -27,13 +27,13 @@ Edit::Edit(QQuickItem* pParent)
 
 void Edit::addIn(Context& ctx)
 {
-  ConstraintItem::addIn(ctx);
+  Targeted::addIn(ctx);
   suggest(mSuggested);
 }
 
 void Edit::removeIn(Context& ctx)
 {
-  ConstraintItem::removeIn(ctx);
+  Targeted::removeIn(ctx);
 }
 
 void Edit::suggest(double value)

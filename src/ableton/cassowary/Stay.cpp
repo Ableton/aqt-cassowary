@@ -11,9 +11,9 @@ namespace ableton {
 namespace cassowary {
 
 Stay::Stay(QQuickItem* pParent)
-  : TargetedItem(pParent, Strength::Weak, 1.0)
+  : Targeted(pParent, Strength::Weak, 1.0)
 {
-  connect(this, &TargetedItem::actualTargetChanged, [this](Variable* target) {
+  connect(this, &Targeted::actualTargetChanged, [this](Variable* target) {
     set(target
         ? std::make_shared<rhea::stay_constraint>(target->variableImpl())
         : nullptr);

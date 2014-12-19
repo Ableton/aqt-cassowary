@@ -7,6 +7,7 @@
 
 ABL_DISABLE_WARNINGS
 #include <QtQuick/QQuickItem>
+#include <QtCore/QPointer>
 #include <memory>
 ABL_RESTORE_WARNINGS
 
@@ -20,12 +21,16 @@ class Contextual : public QQuickItem
 public:
   Contextual(QQuickItem* pParent = 0);
 
-  virtual std::shared_ptr<Context> context() = 0;
+  std::shared_ptr<Context> context();
+  std::shared_ptr<const Context> context() const;
   Q_SIGNAL void contextChanged();
+
+  Q_PROPERTY(ableton::cassowary::Contextual* extend
+             MEMBER mExtend NOTIFY extendChanged)
+  Q_SIGNAL void extendChanged(ableton::cassowary::Contextual* extend);
 
   Q_INVOKABLE void commit();
   Q_INVOKABLE void defer(QJSValue cb);
-
   void defer(Context::DeferredCallback cb);
 
   template <typename ...Args>
@@ -35,6 +40,22 @@ public:
       ctx->log(std::forward<Args>(args)...);
     }
   }
+
+protected:
+  void add();
+  void remove();
+  void update(Context::DeferredCallback cb);
+  void updateContext();
+  Contextual* provider() { return mProvider; }
+
+  virtual std::shared_ptr<Context> provided() { return nullptr; }
+  virtual void addIn(Context& impl) = 0;
+  virtual void removeIn(Context& impl) = 0;
+
+private:
+  QPointer<Contextual> mExtend;
+  QPointer<Contextual> mProvider;
+  std::shared_ptr<Context> mContext;
 };
 
 } // namespace cassowary

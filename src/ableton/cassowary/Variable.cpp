@@ -6,7 +6,7 @@ namespace ableton {
 namespace cassowary {
 
 Variable::Variable(QQuickItem* pParent)
-  : SolverItem(pParent)
+  : Contextual(pParent)
   , mVariable([this] (double value) {
       Q_EMIT valueChanged(value);
     })
@@ -14,8 +14,9 @@ Variable::Variable(QQuickItem* pParent)
   connect(this, &Variable::initialChanged, [this] (double initial) {
     auto ctx = context();
     if (ctx && ctx->solver().contains_variable(mVariable)) {
-      log("Variable initial value set after initialization:", mVariable, initial);
+      log("Initial value set after initialization for", mVariable, "=", initial);
     } else {
+      log("Setting initial value for ", mVariable, "=", initial);
       mVariable.change_value(initial);
     }
   });

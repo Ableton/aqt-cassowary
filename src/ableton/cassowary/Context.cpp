@@ -5,11 +5,29 @@
 namespace ableton {
 namespace cassowary {
 
+namespace {
+
+template <typename Fn>
+struct Guard {
+  Fn cleanup;
+  Guard(Guard&&) = default;
+  Guard(const Guard&) = delete;
+  ~Guard() { cleanup(); }
+};
+
+template <typename Fn>
+auto guard(Fn&& fn) -> Guard<typename std::decay<Fn>::type>
+{
+  return Guard<typename std::decay<Fn>::type>{ std::forward<Fn>(fn) };
+}
+
+} // anonymous namespace
+
 Context::Context()
 {
   mSolver.set_autosolve(false);
   mTimer.setSingleShot(true);
-  QObject::connect(&mTimer, &QTimer::timeout, [this] {
+  QObject::connect(&mTimer, &QTimer::timeout, &mTimer, [this] {
     commit();
   });
 }
@@ -22,23 +40,30 @@ void Context::defer(DeferredCallback fn)
 
 void Context::schedule()
 {
-  if (!mDeferred.empty() && !mTimer.isActive()) {
+  if (!mCommiting && !mDeferred.empty() && !mTimer.isActive()) {
     mTimer.start();
   }
 }
 
 void Context::commit()
 {
-  auto resolve = !mDeferred.empty();
+  if (!mCommiting) {
+    auto c = shared_from_this();
+    auto g = guard([this] { mCommiting = false; });
+    auto resolve = !mDeferred.empty();
+    mCommiting = true;
 
-  while (!mDeferred.empty()) {
-    mDeferred.front()();
-    mDeferred.pop();
-  }
+    log("Commiting...", mDeferred.size());
+    while (!mDeferred.empty()) {
+      mDeferred.front()();
+      mDeferred.pop();
+    }
 
-  if (resolve) {
-    mSolver.solve();
-    mSolver.resolve();
+    if (resolve) {
+      mSolver.solve();
+      mSolver.resolve();
+    }
+    log("...commit finished");
   }
 }
 

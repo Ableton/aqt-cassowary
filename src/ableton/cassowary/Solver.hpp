@@ -3,6 +3,7 @@
 #pragma once
 
 #include <ableton/cassowary/Contextual.hpp>
+#include <ableton/build_system/Warnings.hpp>
 
 namespace ableton {
 namespace cassowary {
@@ -15,15 +16,18 @@ public:
   Solver(QQuickItem* pParent = 0);
   ~Solver() override;
 
-  Q_PROPERTY(bool debug READ debug WRITE setDebug NOTIFY debugChanged)
-  bool debug() const;
-  void setDebug(bool debug);
+  Q_PROPERTY(bool debug MEMBER mDebug NOTIFY debugChanged)
   Q_SIGNAL void debugChanged(bool debug);
 
-  std::shared_ptr<Context> context() override;
+protected:
+  void componentComplete() override;
+  std::shared_ptr<Context> provided() override;
+  void addIn(Context&) override {}
+  void removeIn(Context&) override {}
 
 private:
-  std::shared_ptr<Context> mContext;
+  bool mDebug = false;
+  std::shared_ptr<Context> mProvided;
 };
 
 } // namespace cassowary

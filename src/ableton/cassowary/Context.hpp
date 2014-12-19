@@ -21,7 +21,7 @@ struct ContextError : std::runtime_error
   using std::runtime_error::runtime_error;
 };
 
-class Context
+class Context : public std::enable_shared_from_this<Context>
 {
 public:
   using DeferredCallback = std::function<void()>;
@@ -54,6 +54,8 @@ private:
     logImpl(std::move(out), std::forward<Args>(args)...);
   }
 
+
+  bool mCommiting = false;
   std::queue<DeferredCallback> mDeferred;
   QTimer mTimer;
   rhea::simplex_solver mSolver;

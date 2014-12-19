@@ -57,13 +57,14 @@ TestScene {
 
     TestCase {
         Solver {
+            id: s1
             Variable {
                 id: v2
                 Edit { suggested: 42 }
             }
         }
         function test_canFindTargetFromParent() {
-            v2.commit()
+            s1.commit()
             compare(v2.value, 42)
         }
     }

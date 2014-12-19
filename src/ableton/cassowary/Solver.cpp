@@ -7,29 +7,33 @@ namespace cassowary {
 
 Solver::Solver(QQuickItem* pParent)
   : Contextual(pParent)
-  , mContext(std::make_shared<Context>())
 {
+  connect(this, &Solver::debugChanged, [this] (bool debug) {
+    if (mProvided) {
+      mProvided->debug = debug;
+    }
+  });
 }
 
 Solver::~Solver()
 {
 }
 
-bool Solver::debug() const
+void Solver::componentComplete()
 {
-  return mContext->debug;
+  Contextual::componentComplete();
+  if (!provider()) {
+    mProvided = std::make_shared<Context>();
+    mProvided->debug = mDebug;
+    updateContext();
+  }
 }
 
-void Solver::setDebug(bool debug)
+std::shared_ptr<Context> Solver::provided()
 {
-  mContext->debug = debug;
-  Q_EMIT debugChanged(debug);
+  return mProvided;
 }
 
-std::shared_ptr<Context> Solver::context()
-{
-  return mContext;
-}
 
 } // namespace cassowary
 } // namespace ableton

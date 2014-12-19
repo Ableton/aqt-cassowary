@@ -26,13 +26,14 @@ TestScene {
             id: s1
         }
 
-        SolverProxy {
-            solver: s1
+        Solver {
+            extend: s1
             Variable { id: v2 }
             Constraint { expr: eq(v2, 42) }
         }
 
         function test_solverCanBeExtendedViaProxy() {
+            s1.commit()
             compare(v2.value, 42)
         }
     }
@@ -41,8 +42,9 @@ TestScene {
         Solver {
             id: s2
         }
-        SolverProxy {
-            solver: s2
+        Solver {
+            id: s2p
+            extend: s2
             Stay {
                 Variable {
                     id: v3
@@ -55,7 +57,7 @@ TestScene {
         }
 
         function test_solverCanBeInheritedFromParentArbitrarily() {
-            s1.commit()
+            wait(0)
             compare(v2.value, 42)
         }
     }

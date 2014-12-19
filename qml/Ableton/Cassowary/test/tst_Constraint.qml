@@ -13,7 +13,7 @@ TestScene {
     TestCase {
         Solver { id: s1 }
         Variable { id: v1 }
-        Constraint { id: c1; solver: s1 }
+        Constraint { id: c1; extend: s1 }
 
         function test_constraints_data() {
             return [
@@ -40,8 +40,8 @@ TestScene {
     TestCase {
         Solver { id: s2 }
         Variable { id: v2 }
-        Constraint { id: c2; solver: s2; expr: eq(v2, 42) }
-        Constraint { id: c3; solver: s2; expr: eq(v2, 21);
+        Constraint { id: c2; extend: s2; expr: eq(v2, 42) }
+        Constraint { id: c3; extend: s2; expr: eq(v2, 21);
                      strength: Strength.Strong; }
 
         function test_strengths() {
@@ -87,21 +87,21 @@ TestScene {
 
     TestCase {
         Solver {
-            Variable { id: v5; initial: 30 }
+            Variable { id: v5; initial: 30; Stay {} }
             Constraint { expr: geq(v5, 10) }
-            Constraint { expr: leq(v5, 20) }
+            Constraint { expr: leq(v5, 50) }
         }
 
         function test_usesInitialValue() {
             wait(0)
-            compare(v5.value, 20)
+            compare(v5.value, 30)
         }
 
         function test_changingInitialAfterInitializationHasNoEffect() {
             wait(0)
             v5.initial = 15
             wait(0)
-            compare(v5.value, 20)
+            compare(v5.value, 30)
         }
     }
 }

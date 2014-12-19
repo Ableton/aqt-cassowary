@@ -1,23 +1,23 @@
 // Copyright: 2014, Ableton AG, Berlin, all rights reserved
 
-#include <ableton/cassowary/TargetedItem.hpp>
+#include <ableton/cassowary/Targeted.hpp>
 
 namespace ableton {
 namespace cassowary {
 
-TargetedItem::TargetedItem(QQuickItem* pParent,
+Targeted::Targeted(QQuickItem* pParent,
                            Strength::Types type,
                            double weight)
-  : ConstraintItem(pParent, type, weight)
+  : ConstraintBase(pParent, type, weight)
 {
   auto notify = [this] {
     Q_EMIT actualTargetChanged(actualTarget());
   };
   connect(this, &QQuickItem::parentChanged, notify);
-  connect(this, &TargetedItem::targetChanged, notify);
+  connect(this, &Targeted::targetChanged, notify);
 }
 
-Variable* TargetedItem::actualTarget()
+Variable* Targeted::actualTarget()
 {
   return mTarget
     ? static_cast<Variable*>(mTarget)

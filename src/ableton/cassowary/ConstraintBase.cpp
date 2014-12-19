@@ -1,18 +1,18 @@
 // Copyright: 2014, Ableton AG, Berlin, all rights reserved
 
-#include <ableton/cassowary/ConstraintItem.hpp>
+#include <ableton/cassowary/ConstraintBase.hpp>
 
 namespace ableton {
 namespace cassowary {
 
-ConstraintItem::ConstraintItem(QQuickItem* pParent,
+ConstraintBase::ConstraintBase(QQuickItem* pParent,
                                Strength::Types strength,
                                double weight)
-  : SolverItem(pParent)
+  : Contextual(pParent)
   , mStrength(strength)
   , mWeight(weight)
 {
-  connect(this, &ConstraintItem::strengthChanged, [this](Strength::Types) {
+  connect(this, &ConstraintBase::strengthChanged, [this](Strength::Types) {
     update([this] {
       if (!mConstraint.is_nil()) {
         mConstraint.change_strength(Strength::impl(mStrength));
@@ -20,7 +20,7 @@ ConstraintItem::ConstraintItem(QQuickItem* pParent,
     });
   });
 
-  connect(this, &ConstraintItem::weightChanged, [this](double) {
+  connect(this, &ConstraintBase::weightChanged, [this](double) {
     update([this] {
       if (!mConstraint.is_nil()) {
         mConstraint.change_weight(mWeight);
@@ -28,14 +28,14 @@ ConstraintItem::ConstraintItem(QQuickItem* pParent,
     });
   });
 
-  connect(this, &ConstraintItem::whenChanged, [this](bool when) {
+  connect(this, &ConstraintBase::whenChanged, [this](bool when) {
     update ([this, when] {
       mActualWhen = when;
     });
   });
 }
 
-void ConstraintItem::set(std::shared_ptr<rhea::abstract_constraint> constraint)
+void ConstraintBase::set(std::shared_ptr<rhea::abstract_constraint> constraint)
 {
   update([this, constraint]() mutable {
     mConstraint = std::move(constraint);
@@ -46,7 +46,7 @@ void ConstraintItem::set(std::shared_ptr<rhea::abstract_constraint> constraint)
   });
 }
 
-void ConstraintItem::addIn(Context& ctx)
+void ConstraintBase::addIn(Context& ctx)
 {
   if (when() && !mConstraint.is_nil()) {
     log("Add:", mConstraint);
@@ -58,7 +58,7 @@ void ConstraintItem::addIn(Context& ctx)
   }
 }
 
-void ConstraintItem::removeIn(Context& ctx)
+void ConstraintBase::removeIn(Context& ctx)
 {
   if (!mConstraint.is_nil()) {
     try {

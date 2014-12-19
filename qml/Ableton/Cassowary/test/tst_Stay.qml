@@ -16,11 +16,11 @@ TestScene {
             id: v1
         }
         Stay {
-            id: st1; solver: s1
+            id: st1; extend: s1
             target: v1; strength: Strength.Strong
         }
         Constraint {
-            id: c1; solver: s1
+            id: c1; extend: s1
             expr: eq(v1, 42); strength: Strength.Weak
         }
 

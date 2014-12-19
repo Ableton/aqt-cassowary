@@ -3,19 +3,19 @@
 #pragma once
 
 #include <ableton/cassowary/Variable.hpp>
-#include <ableton/cassowary/ConstraintItem.hpp>
+#include <ableton/cassowary/ConstraintBase.hpp>
 
 namespace ableton {
 namespace cassowary {
 
-class TargetedItem : public ConstraintItem
+class Targeted : public ConstraintBase
 {
   Q_OBJECT
 
 public:
-  TargetedItem(QQuickItem* pParent = 0,
-               Strength::Types strength = Strength::Required,
-               double weight = 1.0);
+  Targeted(QQuickItem* pParent = 0,
+           Strength::Types strength = Strength::Required,
+           double weight = 1.0);
 
   Q_PROPERTY(ableton::cassowary::Variable* target
              MEMBER mTarget NOTIFY targetChanged)
