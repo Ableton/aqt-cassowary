@@ -19,115 +19,18 @@ Q_DECLARE_METATYPE(rhea::linear_inequality)
 namespace ableton {
 namespace cassowary {
 
-namespace {
-
-struct WithQVariantError : std::exception {};
-
-template <typename ...Ts>
-struct WithQVariantImpl;
-
-template <typename T, typename... Ts>
-struct WithQVariantImpl<T, Ts...>
-{
-  template <typename VisitorT>
-  void operator() (const QVariant& var, VisitorT&& visitor)
-  {
-    if (var.canConvert<T>()) {
-      return std::forward<VisitorT>(visitor)(var.value<T>());
-    } else {
-      auto impl = WithQVariantImpl<Ts...> {};
-      impl(var, visitor);
-    }
-  }
-
-  template <typename VisitorT>
-  void operator() (QVariant& var, VisitorT&& visitor)
-  {
-    if (var.canConvert<T>()) {
-      std::forward<VisitorT>(visitor)(var.value<T>());
-    } else {
-      auto impl = WithQVariantImpl<Ts...> {};
-      impl(var, visitor);
-    }
-  }
-};
-
-template <>
-struct WithQVariantImpl<>
-{
-  template <typename VisitorT>
-  void operator() (const QVariant& var, VisitorT&& visitor)
-  {
-    Q_UNUSED(var);
-    Q_UNUSED(visitor);
-    throw WithQVariantError {};
-  }
-};
-
-//!
-// @todo This implementation is acknowledged to not be
-// standards-compliant but it is the simplest.  A better
-// implementation will eventually come to our libraries, usable also
-// with ableton::base::match()
-//
-template <typename... Fns>
-struct WithQVariantVisitor : Fns...
-{
-  template <typename ...Fns2>
-  WithQVariantVisitor(Fns2&& ...fns)
-    : Fns(std::forward<Fns2>(fns))...
-  {}
-};
-
-//!
-// @todo This is a sketch of a potential real tool that could go in
-// ableton::base. Eventually we would want to use mpl sequences
-// (including) ableton::meta::Pack for types and improve the semantics
-// a little bit.  For example, it would be nice to have return type
-// deduction like ableton::base::Variant.
-//
-template <typename ...Types, typename ...Fns>
-void withQVariant(QVariant& var, Fns&& ...fns)
-{
-  auto impl = WithQVariantImpl<Types...> {};
-  auto visitor = WithQVariantVisitor<Fns...> { fns... };
-  impl(var, visitor);
-}
-
-template <typename ...Types, typename ...Fns>
-void withQVariant(const QVariant& var, Fns&& ...fns)
-{
-  auto impl = WithQVariantImpl<Types...> {};
-  auto visitor = WithQVariantVisitor<Fns...> { fns... };
-  impl(var, visitor);
-}
-
-} // anonymous namespace
-
-struct Constraint::Setter
-{
-  Constraint& target;
-
-  template <typename T>
-  void operator() (T&& origin)
-  {
-    return target.set(
-      std::make_shared<typename std::decay<T>::type>(
-        std::forward<T>(origin)));
-  }
-};
-
 Constraint::Constraint(QQuickItem* pParent)
   : ConstraintBase(pParent)
 {
   connect(this, &Constraint::exprChanged, [this](QVariant expr) {
-    try {
-      withQVariant<
-        rhea::linear_inequality,
-        rhea::linear_equation>(
-          expr,
-          Setter { *this });
-    } catch (const WithQVariantError&) {}
+    if (expr.canConvert<rhea::linear_inequality>()) {
+      set(std::make_shared<rhea::linear_inequality>(
+            expr.value<rhea::linear_inequality>()));
+    }
+    else if (expr.canConvert<rhea::linear_equation>()) {
+      set(std::make_shared<rhea::linear_equation>(
+            expr.value<rhea::linear_equation>()));
+    }
   });
 }
 
