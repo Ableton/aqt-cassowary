@@ -3,6 +3,7 @@
 *.gyp               text
 *.gypi              text
 *.hpp               text diff=cpp
+*.html              text
 *.js                text
 *.md                text
 *.qml               text
