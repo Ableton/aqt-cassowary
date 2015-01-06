@@ -21,10 +21,7 @@ namespace cassowary {
 
 namespace {
 
-struct WithQVariantError : std::runtime_error
-{
-  using std::runtime_error::runtime_error;
-};
+struct WithQVariantError : std::exception {};
 
 template <typename ...Ts>
 struct WithQVariantImpl;
@@ -63,7 +60,7 @@ struct WithQVariantImpl<>
   {
     Q_UNUSED(var);
     Q_UNUSED(visitor);
-    throw WithQVariantError { "No appropiate type" };
+    throw WithQVariantError {};
   }
 };
 
@@ -136,10 +133,7 @@ Constraint::Constraint(QQuickItem* pParent)
 
 namespace {
 
-struct NonExpressionError : std::runtime_error
-{
-  using std::runtime_error::runtime_error;
-};
+struct NonExpressionError : std::exception {};
 
 rhea::linear_expression expression(QVariant v)
 {
@@ -152,7 +146,7 @@ rhea::linear_expression expression(QVariant v)
   if (Variable* e = v.value<Variable*>()) {
     return e->variableImpl();
   }
-  throw NonExpressionError { "Invalid argument" };
+  throw NonExpressionError{};
 }
 
 template <typename OpFn>
