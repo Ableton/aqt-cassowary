@@ -58,6 +58,8 @@ void Contextual::commit()
   auto ctx = context();
   if (ctx) {
     ctx->commit();
+  } else {
+    qWarning() << "Commit on element with no context";
   }
 }
 
