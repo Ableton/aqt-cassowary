@@ -39,7 +39,7 @@ void Edit::removeIn(Context& ctx)
 void Edit::suggest(double value)
 {
   if (!std::isnan(value)) {
-    defer([this, value] {
+    defer_([this, value] {
       auto ctx = context();
       auto target = actualTarget();
       if (when() && ctx && target) {

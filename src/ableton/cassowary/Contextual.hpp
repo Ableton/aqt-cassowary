@@ -32,6 +32,8 @@ public:
   Q_INVOKABLE void commit();
   Q_INVOKABLE void defer(QJSValue cb);
   void defer(Context::DeferredCallback cb);
+  // Used to disambiguate some calls because VS03 is dumb
+  void defer_(Context::DeferredCallback cb) { defer(std::move(cb)); }
 
   template <typename ...Args>
   void log(Args&&... args) {

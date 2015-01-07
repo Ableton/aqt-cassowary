@@ -35,7 +35,7 @@ Contextual::Contextual(QQuickItem* pParent)
 
 void Contextual::defer(QJSValue cb)
 {
-  defer([cb]() mutable { cb.call(); });
+  defer_([cb]() mutable { cb.call(); });
 }
 
 void Contextual::defer(Context::DeferredCallback cb)
@@ -75,7 +75,7 @@ std::shared_ptr<const Context> Contextual::context() const
 
 void Contextual::add()
 {
-  defer([this] {
+  defer_([this] {
     if (mContext) {
       addIn(*mContext);
     }
@@ -84,7 +84,7 @@ void Contextual::add()
 
 void Contextual::remove()
 {
-  defer([this] {
+  defer_([this] {
     if (mContext) {
       removeIn(*mContext);
     }
@@ -94,7 +94,7 @@ void Contextual::remove()
 void Contextual::update(Context::DeferredCallback cb)
 {
   remove();
-  defer([this, cb] {
+  defer_([this, cb] {
     cb();
   });
   add();
@@ -118,7 +118,7 @@ void Contextual::updateContext()
   if (context != mContext) {
     update([this, context] {
       mContext = context;
-      defer([this] {
+      defer_([this] {
         Q_EMIT contextChanged();
       });
     });
