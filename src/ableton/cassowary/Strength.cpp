@@ -18,6 +18,9 @@ rhea::strength Strength::impl(Types t)
   case Weak:
     return rhea::strength::weak();
   }
+#if defined(_MSC_VER)
+  return rhea::strength::required();
+#endif
 }
 
 } // namespace cassowary
