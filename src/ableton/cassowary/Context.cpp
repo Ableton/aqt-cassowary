@@ -10,7 +10,8 @@ namespace {
 template <typename Fn>
 struct Guard {
   Fn cleanup;
-  Guard(Guard&&) = default;
+  Guard(Fn c) : cleanup(std::move(c)) {}
+  Guard(Guard&& g) : cleanup(std::move(g.cleanup)) {}
   Guard(const Guard&) = delete;
   ~Guard() { cleanup(); }
 };
