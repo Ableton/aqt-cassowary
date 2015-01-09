@@ -66,6 +66,8 @@ Item {
             strength: Strength.Strong
             weight: 100
             when: !!snapTo && !root.dragging && vSize.value > 0
+            onWhenChanged: update()
+            Component.onCompleted: update()
             function update() {
                 expr = eq(vSize, MoreUtils.closest(snapTo, vSize.value))
             }
@@ -81,6 +83,8 @@ Item {
             when: root.resizing
             strength: Strength.Strong
             weight: 2
+            onWhenChanged: update()
+            Component.onCompleted: update()
             function update() {
                 var ratio = root.totalSize == 0
                     ? root.initialRatio
