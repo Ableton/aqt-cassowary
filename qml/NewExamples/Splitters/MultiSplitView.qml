@@ -114,6 +114,9 @@ Item {
     }
 
     function reconcile() {
+        __handles.forEach(function (h) {
+            h.ePosition.suggested = h.vPosition.value
+        })
         solver.commit()
         solver.defer(function () {
             __wrappers.forEach(function (w) {
