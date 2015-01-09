@@ -104,4 +104,24 @@ TestScene {
             compare(v5.value, 30)
         }
     }
+
+    TestCase {
+        Solver {
+            id: s3
+            Variable { id: v6 }
+            Constraint { id: c5 }
+        }
+
+        function test_canExplicitlyResolveSystem() {
+            s3.commit() // propagate context
+            c5.expr = c5.eq(v6, 42)
+            s3.defer(function () {
+                compare(v6.value, 0)
+                s3.resolve()
+                compare(v6.value, 42)
+            })
+            s3.commit()
+            compare(v6.value, 42)
+        }
+    }
 }

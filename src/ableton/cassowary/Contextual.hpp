@@ -29,6 +29,7 @@ public:
              MEMBER mExtend NOTIFY extendChanged)
   Q_SIGNAL void extendChanged(ableton::cassowary::Contextual* extend);
 
+  Q_INVOKABLE void resolve();
   Q_INVOKABLE void commit();
   Q_INVOKABLE void defer(QJSValue cb);
   void defer(Context::DeferredCallback cb);

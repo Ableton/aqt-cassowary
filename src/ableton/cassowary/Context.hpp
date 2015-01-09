@@ -34,6 +34,7 @@ public:
 
   void defer(DeferredCallback fn);
   void commit();
+  void resolve();
 
   template <typename ...Args>
   void log(Args&&... args)

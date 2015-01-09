@@ -46,12 +46,18 @@ void Context::schedule()
   }
 }
 
+void Context::resolve()
+{
+  mSolver.solve();
+  mSolver.resolve();
+}
+
 void Context::commit()
 {
   if (!mCommiting) {
     auto c = shared_from_this();
     auto g = guard([this] { mCommiting = false; });
-    auto resolve = !mDeferred.empty();
+    auto doStuff = !mDeferred.empty();
     mCommiting = true;
 
     log("Commiting...", mDeferred.size());
@@ -60,9 +66,8 @@ void Context::commit()
       mDeferred.pop();
     }
 
-    if (resolve) {
-      mSolver.solve();
-      mSolver.resolve();
+    if (doStuff) {
+      resolve();
     }
     log("...commit finished");
   }
