@@ -167,7 +167,8 @@ Item {
 
     function full(index) {
         var lastFull = getFull()
-        if (lastFull === index) {
+        var snaps = __wrappers[index] && __wrappers[index].snapTo
+        if (lastFull === index || snaps) {
             __wrappers.forEach(function (w) {
                 w.eSize.when = true
                 w.cCollapse.when = false
