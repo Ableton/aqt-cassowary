@@ -12,3 +12,5 @@
 .gitignore          text
 data-example        eol=lf
 qmldir              text
+LICENSE             text
+README.md           text
