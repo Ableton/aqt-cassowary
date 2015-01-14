@@ -23,7 +23,6 @@
 import QtQuick 2.3
 import QtTest 1.0
 
-import Ableton.Base 1.0
 import Ableton.TestUtils 1.0
 import Ableton.Cassowary 1.0
 
