@@ -1,3 +1,0 @@
-module Ableton.Cassowary
-
-plugin AqtCassowaryPlugin @PATH_TO_PLUGIN@

@@ -99,7 +99,7 @@ Item {
 
     function message() {
         if (debug) {
-            var arr = new Array("[Ableton.Cassowary]")
+            var arr = new Array("[CassowaryJS]")
             arr.push.apply(arr, arguments)
             console.log.apply(console, arr)
         }

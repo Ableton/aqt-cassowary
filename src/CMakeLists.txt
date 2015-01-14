@@ -19,28 +19,28 @@
 # THE SOFTWARE.
 
 add_library(AqtCassowaryPlugin MODULE
-  ableton/cassowary/CassowaryPlugin.cpp
-  ableton/cassowary/CassowaryPlugin.hpp
-  ableton/cassowary/Constraint.cpp
-  ableton/cassowary/Constraint.hpp
-  ableton/cassowary/ConstraintBase.cpp
-  ableton/cassowary/ConstraintBase.hpp
-  ableton/cassowary/Context.cpp
-  ableton/cassowary/Context.hpp
-  ableton/cassowary/Contextual.cpp
-  ableton/cassowary/Contextual.hpp
-  ableton/cassowary/Edit.cpp
-  ableton/cassowary/Edit.hpp
-  ableton/cassowary/Solver.cpp
-  ableton/cassowary/Solver.hpp
-  ableton/cassowary/Stay.cpp
-  ableton/cassowary/Stay.hpp
-  ableton/cassowary/Strength.cpp
-  ableton/cassowary/Strength.hpp
-  ableton/cassowary/Variable.cpp
-  ableton/cassowary/Variable.hpp
-  ableton/cassowary/Targeted.cpp
-  ableton/cassowary/Targeted.hpp
+  aqt/cassowary/CassowaryPlugin.cpp
+  aqt/cassowary/CassowaryPlugin.hpp
+  aqt/cassowary/Constraint.cpp
+  aqt/cassowary/Constraint.hpp
+  aqt/cassowary/ConstraintBase.cpp
+  aqt/cassowary/ConstraintBase.hpp
+  aqt/cassowary/Context.cpp
+  aqt/cassowary/Context.hpp
+  aqt/cassowary/Contextual.cpp
+  aqt/cassowary/Contextual.hpp
+  aqt/cassowary/Edit.cpp
+  aqt/cassowary/Edit.hpp
+  aqt/cassowary/Solver.cpp
+  aqt/cassowary/Solver.hpp
+  aqt/cassowary/Stay.cpp
+  aqt/cassowary/Stay.hpp
+  aqt/cassowary/Strength.cpp
+  aqt/cassowary/Strength.hpp
+  aqt/cassowary/Variable.cpp
+  aqt/cassowary/Variable.hpp
+  aqt/cassowary/Targeted.cpp
+  aqt/cassowary/Targeted.hpp
   )
 target_link_libraries(AqtCassowaryPlugin rhea Qt5::Quick)
 target_include_directories(AqtCassowaryPlugin PUBLIC
@@ -62,25 +62,25 @@ set_target_properties(AqtCassowaryPlugin
 # in qmldir.in)
 set(PATH_TO_PLUGIN "${PROJECT_BINARY_DIR}/output")
 configure_file(
-  "${PROJECT_SOURCE_DIR}/qml/Ableton/Cassowary/qmldir.in"
-  "${PROJECT_SOURCE_DIR}/qml/Ableton/Cassowary/qmldir"
+  "${PROJECT_SOURCE_DIR}/qml/Aqt/Cassowary/qmldir.in"
+  "${PROJECT_SOURCE_DIR}/qml/Aqt/Cassowary/qmldir"
   @ONLY)
 unset(PATH_TO_PLUGIN)
 
 # prepare another qmldir, which we can use for installation
 set(PATH_TO_PLUGIN "")
 configure_file(
-  "${PROJECT_SOURCE_DIR}/qml/Ableton/Cassowary/qmldir.in"
+  "${PROJECT_SOURCE_DIR}/qml/Aqt/Cassowary/qmldir.in"
   "${plugin_output}/qmldir"
   @ONLY)
 unset(PATH_TO_PLUGIN)
 
 set(PLUGIN_INSTALL_DIR "lib/qml")
 install(TARGETS AqtCassowaryPlugin
-  LIBRARY DESTINATION "${PLUGIN_INSTALL_DIR}/Ableton/Cassowary")
+  LIBRARY DESTINATION "${PLUGIN_INSTALL_DIR}/Aqt/Cassowary")
 install(FILES "${plugin_output}/qmldir"
-  DESTINATION "${PLUGIN_INSTALL_DIR}/Ableton/Cassowary")
-install(DIRECTORY "${PROJECT_SOURCE_DIR}/qml/Ableton/Cassowary"
+  DESTINATION "${PLUGIN_INSTALL_DIR}/Aqt/Cassowary")
+install(DIRECTORY "${PROJECT_SOURCE_DIR}/qml/Aqt/Cassowary"
   DESTINATION "${PLUGIN_INSTALL_DIR}"
   FILES_MATCHING REGEX ".*\\.(qml|js)$")
 

@@ -1,6 +1,6 @@
 import QtQuick 2.3
 import QtQuick.Controls 1.3
-import Ableton.Cassowary 1.0
+import Aqt.Cassowary 1.0
 
 ApplicationWindow {
     id: root

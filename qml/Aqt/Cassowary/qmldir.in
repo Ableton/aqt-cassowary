@@ -1,0 +1,3 @@
+module Aqt.Cassowary
+
+plugin AqtCassowaryPlugin @PATH_TO_PLUGIN@
