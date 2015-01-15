@@ -1,5 +1,0 @@
-{
-    'includes': [
-        'src/CassowaryPlugin.gypi'
-    ],
-}
