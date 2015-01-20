@@ -18,6 +18,39 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
+find_library(Rhea_LIBRARY rhea)
+
+add_library(Rhea::Rhea UNKNOWN IMPORTED)
+if (Rhea_LIBRARY)
+  set_property(TARGET Rhea::Rhea PROPERTY IMPORTED_LOCATION "${Rhea_LIBRARY}")
+  get_filename_component(_dir ${Rhea_LIBRARY} PATH)
+  get_filename_component(_dir ${_dir} PATH)
+  set_property(TARGET Rhea::Rhea PROPERTY INTERFACE_INCLUDE_DIRECTORIES "${_dir}/include")
+else()
+  include(ExternalProject)
+  ExternalProject_Add(RheaBuild
+    SOURCE_DIR "${AqtCassowary_SOURCE_DIR}/third-party/rhea"
+    CMAKE_ARGS "-DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_BINARY_DIR}/rhea-prefix"
+  )
+
+  if (APPLE)
+    set(rhea_lib_location "${CMAKE_CURRENT_BINARY_DIR}/rhea-prefix/lib/librhea-s.a")
+  elseif(WIN32)
+    set(rhea_lib_location "${CMAKE_CURRENT_BINARY_DIR}/rhea-prefix/lib/rhea-s.lib")
+  endif()
+  set_property(TARGET Rhea::Rhea PROPERTY IMPORTED_LOCATION "${rhea_lib_location}")
+  add_dependencies(Rhea::Rhea RheaBuild)
+  set(Rhea_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}/rhea-prefix/include")
+endif()
+if(WIN32)
+  # The rhea buildsystem unconditionally adds /MT flags (for static builds)
+  # That means we have to do the same.
+  set_property(TARGET Rhea::Rhea PROPERTY INTERFACE_COMPILE_OPTIONS
+    "$<$<CONFIG:Debug>:/MTd>"
+    "$<$<NOT:$<CONFIG:Debug>>:/MT>"
+  )
+endif()
+
 add_library(AqtCassowaryPlugin MODULE
   aqt/cassowary/CassowaryPlugin.cpp
   aqt/cassowary/CassowaryPlugin.hpp
@@ -42,10 +75,10 @@ add_library(AqtCassowaryPlugin MODULE
   aqt/cassowary/Targeted.cpp
   aqt/cassowary/Targeted.hpp
   )
-target_link_libraries(AqtCassowaryPlugin rhea Qt5::Quick)
+target_link_libraries(AqtCassowaryPlugin Rhea::Rhea Qt5::Quick)
 target_include_directories(AqtCassowaryPlugin PUBLIC
   "${PROJECT_SOURCE_DIR}/compat/src"
-  "${PROJECT_SOURCE_DIR}/third-party/rhea"
+  "${Rhea_INCLUDE_DIR}"
   "${Boost_INCLUDE_DIRS}")
 target_compile_options(AqtCassowaryPlugin
   PUBLIC ${cxx11_options} ${warning_options})
