@@ -12,7 +12,7 @@ class Constraint : public ConstraintBase
   Q_OBJECT
 
 public:
-  Constraint(QQuickItem* pParent = 0);
+  Constraint(QQuickItem* pParent = nullptr);
 
   Q_PROPERTY(QVariant expr MEMBER mExpr NOTIFY exprChanged)
   Q_SIGNAL void exprChanged(QVariant expr);

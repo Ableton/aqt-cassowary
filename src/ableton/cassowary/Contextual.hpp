@@ -19,7 +19,7 @@ class Contextual : public QQuickItem
   Q_OBJECT
 
 public:
-  Contextual(QQuickItem* pParent = 0);
+  Contextual(QQuickItem* pParent = nullptr);
 
   std::shared_ptr<Context> context();
   std::shared_ptr<const Context> context() const;

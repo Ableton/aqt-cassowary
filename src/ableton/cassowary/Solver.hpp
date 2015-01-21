@@ -13,7 +13,7 @@ class Solver : public Contextual
   Q_OBJECT
 
 public:
-  Solver(QQuickItem* pParent = 0);
+  Solver(QQuickItem* pParent = nullptr);
   ~Solver() override;
 
   Q_PROPERTY(bool debug MEMBER mDebug NOTIFY debugChanged)

@@ -17,7 +17,7 @@ class Variable : public Contextual
   Q_OBJECT
 
 public:
-  Variable(QQuickItem* pParent = 0);
+  Variable(QQuickItem* pParent = nullptr);
 
   Q_PROPERTY(double value READ value NOTIFY valueChanged)
   double value() const;

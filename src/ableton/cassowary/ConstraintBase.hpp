@@ -13,7 +13,7 @@ class ConstraintBase : public Contextual
   Q_OBJECT
 
 public:
-  ConstraintBase(QQuickItem* pParent = 0,
+  ConstraintBase(QQuickItem* pParent = nullptr,
                  Strength::Types strength = Strength::Required,
                  double weight = 1.0);
 

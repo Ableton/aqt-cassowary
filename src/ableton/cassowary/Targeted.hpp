@@ -13,7 +13,7 @@ class Targeted : public ConstraintBase
   Q_OBJECT
 
 public:
-  Targeted(QQuickItem* pParent = 0,
+  Targeted(QQuickItem* pParent = nullptr,
            Strength::Types strength = Strength::Required,
            double weight = 1.0);
 
