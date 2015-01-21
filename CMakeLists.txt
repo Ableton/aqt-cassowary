@@ -20,6 +20,10 @@
 
 cmake_minimum_required(VERSION 2.8.12)
 
+if(POLICY CMP0042)
+  cmake_policy(SET CMP0042 NEW)
+endif()
+
 project(AqtCassowary CXX)
 set(AqtCassowary_VERSION_MAJOR 0)
 set(AqtCassowary_VERSION_MINOR 1)
