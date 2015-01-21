@@ -22,7 +22,7 @@ previous solutions to provide stable results fast.
 Cassowary is most useful for writing layout code for responsive
 applications with very dynamic content.  It is the tool you need when
 `anchors` or `QtQuick.Layouts` are too rigid for you.  Check the
-examples in `qml/NewExamples` for more details.
+examples in `examples` for more details.
 
 Status
 ------

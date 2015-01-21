@@ -1,3 +1,4 @@
+"use strict";
 
 //c.trace = true
 //c.debug = true
