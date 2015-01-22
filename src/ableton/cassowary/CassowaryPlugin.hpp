@@ -34,7 +34,7 @@ namespace cassowary {
 class CassowaryPlugin : public QQmlExtensionPlugin
 {
   Q_OBJECT
-  Q_PLUGIN_METADATA(IID "Ableton.Cassowary")
+  Q_PLUGIN_METADATA(IID "Aqt.Cassowary")
 
 public:
   void registerTypes(const char* uri);

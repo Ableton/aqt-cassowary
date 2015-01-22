@@ -60,7 +60,7 @@ public:
   void log(Args&&... args)
   {
     if (debug) {
-      logImpl(qDebug(), "[Ableton.Cassowary]", std::forward<Args>(args)...);
+      logImpl(qDebug(), "[Aqt.Cassowary]", std::forward<Args>(args)...);
     }
   }
 
