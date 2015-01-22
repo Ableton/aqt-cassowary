@@ -28,9 +28,13 @@ if (Rhea_LIBRARY)
   set_property(TARGET Rhea::Rhea PROPERTY INTERFACE_INCLUDE_DIRECTORIES "${_dir}/include")
 else()
   include(ExternalProject)
+  set(rhea_CMake_args
+    -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_BINARY_DIR}/rhea-prefix
+    -DCMAKE_POLICY_DEFAULT_CMP0042=NEW
+  )
   ExternalProject_Add(RheaBuild
     SOURCE_DIR "${AqtCassowary_SOURCE_DIR}/third-party/rhea"
-    CMAKE_ARGS "-DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_BINARY_DIR}/rhea-prefix"
+    CMAKE_ARGS ${rhea_CMake_args}
   )
 
   if (APPLE)
