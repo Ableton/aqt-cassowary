@@ -33,12 +33,14 @@ TestScene {
     }
 
     TestCase {
+        when: windowShown
+
         function test_instantiation() {
             TestUtils.withComponent(solver, null, {}, function (solver) {
             })
         }
 
-        function text_canDeferJavaScriptCall() {
+        function test_canDeferJavaScriptCall() {
             TestUtils.withComponent(solver, null, {}, function (solver) {
                 var count = 0
                 solver.defer(function () {
@@ -50,7 +52,21 @@ TestScene {
             })
         }
 
-        function text_recursiveCommitProtection() {
+        function test_commitsAfterRendering() {
+            var solver2 = solver.createObject(scene, {});
+            var count = 0
+            solver2.defer(function () {
+                ++count
+            })
+            compare(count, 0)
+            waitForRendering(solver2)
+            compare(count, 1)
+            // @todo this causes the thingy to crash.  It is unclear
+            // to me whether it is our fault or a Qt bug.
+            //   solver2.destroy()
+        }
+
+        function test_recursiveCommitProtection() {
             TestUtils.withComponent(solver, null, {}, function (solver) {
                 var count1 = 0
                 var count2 = 0
@@ -59,7 +75,7 @@ TestScene {
                         compare(count1, 1)
                         ++count2
                     })
-                    commit()
+                    solver.commit()
                     ++count1
                 })
                 solver.commit()

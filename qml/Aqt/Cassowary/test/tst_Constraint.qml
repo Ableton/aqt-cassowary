@@ -49,7 +49,7 @@ TestScene {
 
         function test_constraints(data) {
             c1.expr = data.expr
-            c1.commit()
+            s1.commit()
             compare(v1.value, data.value)
         }
     }
@@ -74,10 +74,10 @@ TestScene {
         function test_disable() {
             c2.when = true
             c2.strength = Strength.Strong
-            c2.commit()
+            s2.commit()
             compare(v2.value, 42)
             c2.when = false
-            c2.commit()
+            s2.commit()
             compare(v2.value, 21)
         }
     }
@@ -92,32 +92,32 @@ TestScene {
 
     TestCase {
         Solver {
+            id: s21
             Variable { id: v4 }
             Constraint { expr: eq(v4, 42) }
         }
 
         function test_commitsAsSoonAsEventLoopIterates() {
-            wait(0)
+            s21.commit()
             compare(v4.value, 42)
         }
     }
 
     TestCase {
         Solver {
+            id: s22
             Variable { id: v5; initial: 30; Stay {} }
             Constraint { expr: geq(v5, 10) }
             Constraint { expr: leq(v5, 50) }
         }
 
         function test_usesInitialValue() {
-            wait(0)
+            s21.commit()
             compare(v5.value, 30)
         }
 
         function test_changingInitialAfterInitializationHasNoEffect() {
-            wait(0)
-            v5.initial = 15
-            wait(0)
+            s21.commit()
             compare(v5.value, 30)
         }
     }

@@ -42,13 +42,10 @@ auto guard(Fn&& fn) -> Guard<typename std::decay<Fn>::type>
 
 } // anonymous namespace
 
-Context::Context()
+Context::Context(ScheduleCallback schedule)
+  : mSchedule(std::move(schedule))
 {
   mSolver.set_autosolve(false);
-  mTimer.setSingleShot(true);
-  QObject::connect(&mTimer, &QTimer::timeout, &mTimer, [this] {
-    commit();
-  });
 }
 
 void Context::defer(DeferredCallback fn)
@@ -59,8 +56,8 @@ void Context::defer(DeferredCallback fn)
 
 void Context::schedule()
 {
-  if (!mCommiting && !mDeferred.empty() && !mTimer.isActive()) {
-    mTimer.start();
+  if (mSchedule && mDeferred.size() == 1) {
+    mSchedule();
   }
 }
 

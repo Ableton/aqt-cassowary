@@ -37,13 +37,26 @@ Solver::~Solver()
 {
 }
 
+void Solver::updatePolish()
+{
+  if (mProvided) {
+    mProvided->commit();
+  }
+}
+
 void Solver::componentComplete()
 {
   Contextual::componentComplete();
   if (!provider()) {
-    mProvided = std::make_shared<Context>();
+    auto this_ = QPointer<Solver> { this };
+    mProvided = std::make_shared<Context>([this_] {
+      if (this_) {
+        this_->polish();
+      }
+    });
     mProvided->debug = mDebug;
     updateContext();
+    polish();
   }
 }
 
@@ -51,7 +64,6 @@ std::shared_ptr<Context> Solver::provided()
 {
   return mProvided;
 }
-
 
 } // namespace cassowary
 } // namespace aqt

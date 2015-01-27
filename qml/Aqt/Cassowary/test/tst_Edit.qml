@@ -32,6 +32,7 @@ TestScene {
         property var someVar
 
         Solver {
+            id: s0
             Variable {
                 id: v1
             }
@@ -46,11 +47,12 @@ TestScene {
         }
 
         function test_suggestingValues() {
+            s0.commit()
             e1.suggest(42)
-            e1.commit()
+            s0.commit()
             compare(v1.value, 42)
             e1.suggest(21)
-            e1.commit()
+            s0.commit()
             compare(v1.value, 21)
         }
 

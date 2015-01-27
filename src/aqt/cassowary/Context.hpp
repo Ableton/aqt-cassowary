@@ -25,6 +25,8 @@
 ABL_DISABLE_WARNINGS
 #include <QtCore/QTimer>
 #include <QtCore/QDebug>
+#include <QtCore/QPointer>
+#include <QtQuick/QQuickItem>
 #include <rhea/simplex_solver.hpp>
 #include <rhea/iostream.hpp>
 #include <boost/lexical_cast.hpp>
@@ -43,10 +45,11 @@ class Context : public std::enable_shared_from_this<Context>
 {
 public:
   using DeferredCallback = std::function<void()>;
+  using ScheduleCallback = std::function<void()>;
 
   bool debug = false;
 
-  Context();
+  Context(ScheduleCallback cb);
 
   rhea::simplex_solver& solver() { return mSolver; }
 
@@ -74,9 +77,9 @@ private:
   }
 
 
+  ScheduleCallback mSchedule;
   bool mCommiting = false;
   std::queue<DeferredCallback> mDeferred;
-  QTimer mTimer;
   rhea::simplex_solver mSolver;
 };
 

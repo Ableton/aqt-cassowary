@@ -29,11 +29,13 @@ TestScene {
 
     TestCase {
         Solver {
+            id: s0
             Variable { id: v1 }
             Constraint { expr: eq(v1, 42) }
         }
 
         function test_solverCanBeSpecifiedViaParent() {
+            s0.commit()
             compare(v1.value, 42)
         }
     }
@@ -74,8 +76,8 @@ TestScene {
         }
 
         function test_solverCanBeInheritedFromParentArbitrarily() {
-            wait(0)
-            compare(v2.value, 42)
+            s2.commit()
+            compare(v3.value, 42)
         }
     }
 }
