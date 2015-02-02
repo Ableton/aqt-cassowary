@@ -31,16 +31,19 @@ else()
   set(rhea_CMake_args
     -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_BINARY_DIR}/rhea-prefix
     -DCMAKE_POLICY_DEFAULT_CMP0042=NEW
-  )
+    )
+  if(UNIX)
+    set(rhea_CMake_args ${rhea_CMake_args} -DCMAKE_CXX_FLAGS=-fPIC)
+  endif()
   ExternalProject_Add(RheaBuild
     SOURCE_DIR "${AqtCassowary_SOURCE_DIR}/third-party/rhea"
     CMAKE_ARGS ${rhea_CMake_args}
-  )
+    )
 
-  if (APPLE)
-    set(rhea_lib_location "${CMAKE_CURRENT_BINARY_DIR}/rhea-prefix/lib/librhea-s.a")
-  elseif(WIN32)
+  if(WIN32)
     set(rhea_lib_location "${CMAKE_CURRENT_BINARY_DIR}/rhea-prefix/lib/rhea-s.lib")
+  else()
+    set(rhea_lib_location "${CMAKE_CURRENT_BINARY_DIR}/rhea-prefix/lib/librhea-s.a")
   endif()
   set_property(TARGET Rhea::Rhea PROPERTY IMPORTED_LOCATION "${rhea_lib_location}")
   add_dependencies(Rhea::Rhea RheaBuild)
