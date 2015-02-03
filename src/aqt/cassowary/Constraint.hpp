@@ -35,10 +35,30 @@ public:
   Q_PROPERTY(QVariant expr MEMBER mExpr NOTIFY exprChanged)
   Q_SIGNAL void exprChanged(QVariant expr);
 
-  Q_INVOKABLE QVariant plus(QVariant a, QVariant b);
-  Q_INVOKABLE QVariant minus(QVariant a, QVariant b);
-  Q_INVOKABLE QVariant times(QVariant a, QVariant b);
-  Q_INVOKABLE QVariant divide(QVariant a, QVariant b);
+  Q_INVOKABLE QVariant plus(QVariant, QVariant);
+  Q_INVOKABLE QVariant plus(QVariant, QVariant, QVariant);
+  Q_INVOKABLE QVariant plus(QVariant, QVariant, QVariant, QVariant);
+  Q_INVOKABLE QVariant plus(QVariant, QVariant, QVariant, QVariant, QVariant);
+  Q_INVOKABLE QVariant plus(QVariant, QVariant, QVariant, QVariant, QVariant, QVariant);
+
+  Q_INVOKABLE QVariant minus(QVariant, QVariant);
+  Q_INVOKABLE QVariant minus(QVariant, QVariant, QVariant);
+  Q_INVOKABLE QVariant minus(QVariant, QVariant, QVariant, QVariant);
+  Q_INVOKABLE QVariant minus(QVariant, QVariant, QVariant, QVariant, QVariant);
+  Q_INVOKABLE QVariant minus(QVariant, QVariant, QVariant, QVariant, QVariant, QVariant);
+
+  Q_INVOKABLE QVariant times(QVariant, QVariant);
+  Q_INVOKABLE QVariant times(QVariant, QVariant, QVariant);
+  Q_INVOKABLE QVariant times(QVariant, QVariant, QVariant, QVariant);
+  Q_INVOKABLE QVariant times(QVariant, QVariant, QVariant, QVariant, QVariant);
+  Q_INVOKABLE QVariant times(QVariant, QVariant, QVariant, QVariant, QVariant, QVariant);
+
+  Q_INVOKABLE QVariant divide(QVariant, QVariant);
+  Q_INVOKABLE QVariant divide(QVariant, QVariant, QVariant);
+  Q_INVOKABLE QVariant divide(QVariant, QVariant, QVariant, QVariant);
+  Q_INVOKABLE QVariant divide(QVariant, QVariant, QVariant, QVariant, QVariant);
+  Q_INVOKABLE QVariant divide(QVariant, QVariant, QVariant, QVariant, QVariant, QVariant);
+
   Q_INVOKABLE QVariant eq(QVariant a, QVariant b);
   Q_INVOKABLE QVariant geq(QVariant a, QVariant b);
   Q_INVOKABLE QVariant leq(QVariant a, QVariant b);

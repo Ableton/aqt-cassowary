@@ -73,10 +73,24 @@ rhea::linear_expression expression(QVariant v)
 }
 
 template <typename OpFn>
-QVariant operation(QVariant a, QVariant b, OpFn op)
+QVariant operation(OpFn op, QVariant a, QVariant b)
 {
   try {
-    return QVariant::fromValue(op(expression(a), expression(b)));
+    return QVariant::fromValue(
+      op(expression(b),
+         expression(a)));
+  } catch (const NonExpressionError&) {
+    return QVariant {};
+  }
+}
+
+template <typename OpFn, typename ...More>
+QVariant operation(OpFn op, QVariant a, More&&... s)
+{
+  try {
+    return QVariant::fromValue(
+      op(expression(operation(op, std::forward<More>(s)...)),
+         expression(a)));
   } catch (const NonExpressionError&) {
     return QVariant {};
   }
@@ -86,37 +100,117 @@ QVariant operation(QVariant a, QVariant b, OpFn op)
 
 QVariant Constraint::plus(QVariant a, QVariant b)
 {
-  return operation(a, b, ableton::estd::plus<>{});
+  return operation(ableton::estd::plus<>{}, b, a);
+}
+
+QVariant Constraint::plus(QVariant a, QVariant b, QVariant c)
+{
+  return operation(ableton::estd::plus<>{}, c, b, a);
+}
+
+QVariant Constraint::plus(QVariant a, QVariant b, QVariant c, QVariant d)
+{
+  return operation(ableton::estd::plus<>{}, d, c, b, a);
+}
+
+QVariant Constraint::plus(QVariant a, QVariant b, QVariant c, QVariant d, QVariant e)
+{
+  return operation(ableton::estd::plus<>{}, e, d, c, b, a);
+}
+
+QVariant Constraint::plus(QVariant a, QVariant b, QVariant c, QVariant d, QVariant e,  QVariant f)
+{
+  return operation(ableton::estd::plus<>{}, f, e, d, c, b, a);
 }
 
 QVariant Constraint::minus(QVariant a, QVariant b)
 {
-  return operation(a, b, ableton::estd::minus<>{});
+  return operation(ableton::estd::minus<>{}, b, a);
+}
+
+QVariant Constraint::minus(QVariant a, QVariant b, QVariant c)
+{
+  return operation(ableton::estd::minus<>{}, c, b, a);
+}
+
+QVariant Constraint::minus(QVariant a, QVariant b, QVariant c, QVariant d)
+{
+  return operation(ableton::estd::minus<>{}, d, c, b, a);
+}
+
+QVariant Constraint::minus(QVariant a, QVariant b, QVariant c, QVariant d, QVariant e)
+{
+  return operation(ableton::estd::minus<>{}, e, d, c, b, a);
+}
+
+QVariant Constraint::minus(QVariant a, QVariant b, QVariant c, QVariant d, QVariant e,  QVariant f)
+{
+  return operation(ableton::estd::minus<>{}, f, e, d, c, b, a);
 }
 
 QVariant Constraint::times(QVariant a, QVariant b)
 {
-  return operation(a, b, ableton::estd::multiplies<>{});
+  return operation(ableton::estd::multiplies<>{}, b, a);
+}
+
+QVariant Constraint::times(QVariant a, QVariant b, QVariant c)
+{
+  return operation(ableton::estd::multiplies<>{}, c, b, a);
+}
+
+QVariant Constraint::times(QVariant a, QVariant b, QVariant c, QVariant d)
+{
+  return operation(ableton::estd::multiplies<>{}, d, c, b, a);
+}
+
+QVariant Constraint::times(QVariant a, QVariant b, QVariant c, QVariant d, QVariant e)
+{
+  return operation(ableton::estd::multiplies<>{}, e, d, c, b, a);
+}
+
+QVariant Constraint::times(QVariant a, QVariant b, QVariant c, QVariant d, QVariant e,  QVariant f)
+{
+  return operation(ableton::estd::multiplies<>{}, f, e, d, c, b, a);
 }
 
 QVariant Constraint::divide(QVariant a, QVariant b)
 {
-  return operation(a, b, ableton::estd::divides<>{});
+  return operation(ableton::estd::divides<>{}, b, a);
+}
+
+QVariant Constraint::divide(QVariant a, QVariant b, QVariant c)
+{
+  return operation(ableton::estd::divides<>{}, c, b, a);
+}
+
+QVariant Constraint::divide(QVariant a, QVariant b, QVariant c, QVariant d)
+{
+  return operation(ableton::estd::divides<>{}, d, c, b, a);
+}
+
+QVariant Constraint::divide(QVariant a, QVariant b, QVariant c, QVariant d, QVariant e)
+{
+  return operation(ableton::estd::divides<>{}, e, d, c, b, a);
+}
+
+QVariant Constraint::divide(QVariant a, QVariant b, QVariant c, QVariant d, QVariant e,  QVariant f)
+{
+  return operation(ableton::estd::divides<>{}, f, e, d, c, b, a);
 }
 
 QVariant Constraint::eq(QVariant a, QVariant b)
 {
-  return operation(a, b, ableton::estd::equal_to<>{});
+  return operation(ableton::estd::equal_to<>{}, b, a);
 }
 
 QVariant Constraint::geq(QVariant a, QVariant b)
 {
-  return operation(a, b, ableton::estd::greater_equal<>{});
+  return operation(ableton::estd::greater_equal<>{}, b, a);
 }
 
 QVariant Constraint::leq(QVariant a, QVariant b)
 {
-  return operation(a, b, ableton::estd::less_equal<>{});
+  return operation(ableton::estd::less_equal<>{}, b, a);
 }
 
 } // namespace cassowary
