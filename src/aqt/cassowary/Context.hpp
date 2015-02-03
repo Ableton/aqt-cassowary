@@ -44,16 +44,18 @@ struct ContextError : std::runtime_error
 class Context : public std::enable_shared_from_this<Context>
 {
 public:
-  using DeferredCallback = std::function<void()>;
-  using ScheduleCallback = std::function<void()>;
+  using Id = std::size_t;
+  using Callback = std::function<void()>;
 
   bool debug = false;
 
-  Context(ScheduleCallback cb);
+  Context(Callback cb);
 
   rhea::simplex_solver& solver() { return mSolver; }
 
-  void defer(DeferredCallback fn);
+  void add(Id id, Callback fn);
+  void remove(Id id, Callback fn);
+  void defer(Callback fn);
   void commit();
   void resolve();
 
@@ -78,9 +80,11 @@ private:
 #endif
   }
 
-  ScheduleCallback mSchedule;
+  Callback mSchedule;
   bool mCommiting = false;
-  std::vector<DeferredCallback> mDeferred;
+  std::unordered_map<Id, Callback> mAdditions;
+  std::unordered_map<Id, Callback> mRemovals;
+  std::vector<Callback> mDeferred;
   rhea::simplex_solver mSolver;
 };
 

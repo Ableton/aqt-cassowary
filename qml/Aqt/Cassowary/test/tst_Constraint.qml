@@ -157,4 +157,34 @@ TestScene {
             compare(v6.value, 42)
         }
     }
+
+    TestCase {
+        Solver {
+            id: s4
+            debug: true
+            property bool toggle: true
+            Variable { id: v7 }
+            Constraint {
+                when: s4.toggle
+                expr: eq(v7, 21)
+            }
+            Constraint {
+                when: !s4.toggle
+                expr: eq(v7, 42)
+            }
+        }
+
+        function test_mutuallyExclusiveConstraints() {
+            s4.commit()
+            compare(v7.value, 21)
+
+            s4.toggle = !s4.toggle
+            s4.commit()
+            compare(v7.value, 42)
+
+            s4.toggle = !s4.toggle
+            s4.commit()
+            compare(v7.value, 21)
+        }
+    }
 }

@@ -46,7 +46,9 @@ Edit::Edit(QQuickItem* pParent)
 void Edit::addIn(Context& ctx)
 {
   Targeted::addIn(ctx);
-  suggest(mSuggested);
+  defer_([this] {
+    suggest(mSuggested);
+  });
 }
 
 void Edit::removeIn(Context& ctx)
