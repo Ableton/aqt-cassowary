@@ -69,12 +69,17 @@ private:
   void schedule();
 
   void logImpl(QDebug&&) {}
+
   template <typename Arg, typename ...Args>
+#ifndef NDEBUG
   void logImpl(QDebug&& out, Arg&& arg, Args&&... args)
   {
     out << boost::lexical_cast<std::string>(std::forward<Arg>(arg)).c_str();
     logImpl(std::move(out), std::forward<Args>(args)...);
   }
+#else
+  void logImpl(QDebug&&, Arg&&, Args&&...) {}
+#endif
 
   ScheduleCallback mSchedule;
   bool mCommiting = false;
