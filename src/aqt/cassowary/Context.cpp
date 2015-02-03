@@ -50,7 +50,7 @@ Context::Context(ScheduleCallback schedule)
 
 void Context::defer(DeferredCallback fn)
 {
-  mDeferred.emplace(std::move(fn));
+  mDeferred.emplace_back(std::move(fn));
   schedule();
 }
 
@@ -76,10 +76,10 @@ void Context::commit()
     mCommiting = true;
 
     log("Commiting...", mDeferred.size());
-    while (!mDeferred.empty()) {
-      mDeferred.front()();
-      mDeferred.pop();
+    for (auto i = 0u; i < mDeferred.size(); ++i) {
+      mDeferred[i]();
     }
+    mDeferred.clear();
 
     if (doStuff) {
       resolve();

@@ -79,7 +79,7 @@ private:
 
   ScheduleCallback mSchedule;
   bool mCommiting = false;
-  std::queue<DeferredCallback> mDeferred;
+  std::vector<DeferredCallback> mDeferred;
   rhea::simplex_solver mSolver;
 };
 
