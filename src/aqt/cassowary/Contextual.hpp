@@ -50,9 +50,9 @@ public:
   Q_INVOKABLE void resolve();
   Q_INVOKABLE void commit();
   Q_INVOKABLE void defer(QJSValue cb);
-  void defer(Context::DeferredCallback cb);
+  void defer(Context::Callback cb);
   // Used to disambiguate some calls because VS03 is dumb
-  void defer_(Context::DeferredCallback cb) { defer(std::move(cb)); }
+  void defer_(Context::Callback cb) { defer(std::move(cb)); }
 
   template <typename ...Args>
   void log(Args&&... args) {
@@ -65,7 +65,26 @@ public:
 protected:
   void add();
   void remove();
-  void update(Context::DeferredCallback cb);
+
+  template <typename Fn>
+  void update(Fn&& cb)
+  {
+    remove();
+    std::forward<Fn>(cb)();
+    add();
+  }
+
+  template <typename Fn>
+  Context::Callback guarded(Fn fn)
+  {
+    auto guard = QPointer<QObject>{ this };
+    return [guard, fn] {
+      if (guard) {
+        fn();
+      }
+    };
+  }
+
   void updateContext();
   Contextual* provider() { return mProvider; }
 
