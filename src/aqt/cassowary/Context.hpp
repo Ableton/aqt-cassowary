@@ -76,7 +76,6 @@ private:
     logImpl(std::move(out), std::forward<Args>(args)...);
   }
 
-
   ScheduleCallback mSchedule;
   bool mCommiting = false;
   std::vector<DeferredCallback> mDeferred;
