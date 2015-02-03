@@ -48,6 +48,8 @@ Constraint::Constraint(QQuickItem* pParent)
     else if (expr.canConvert<rhea::linear_equation>()) {
       set(std::make_shared<rhea::linear_equation>(
             expr.value<rhea::linear_equation>()));
+    } else {
+      log("Empty expression set");
     }
   });
 }
@@ -76,7 +78,6 @@ QVariant operation(QVariant a, QVariant b, OpFn op)
   try {
     return QVariant::fromValue(op(expression(a), expression(b)));
   } catch (const NonExpressionError&) {
-    qWarning() << "No expression!";
     return QVariant {};
   }
 }
