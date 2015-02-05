@@ -50,7 +50,7 @@ Item {
             when: false
         }
         Constraint { expr: geq(vSize, minimumSize) }
-        Constraint { expr: leq(vSize, maximumSize) }
+        Constraint { expr: leq(vSize, maximumSize); when: maximumSize < Infinity }
         Constraint {
             expr: eq(vPosition,
                    root.prevHandle
