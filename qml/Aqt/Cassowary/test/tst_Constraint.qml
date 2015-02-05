@@ -75,7 +75,7 @@ TestScene {
         Variable { id: v2 }
         Constraint { id: c2; extend: s2; expr: eq(v2, 42) }
         Constraint { id: c3; extend: s2; expr: eq(v2, 21);
-                     strength: Strength.Strong; }
+                     strength: Strength.Medium; }
 
         function test_strengths() {
             c2.when = true
