@@ -95,6 +95,9 @@ TestScene {
             c2.when = false
             s2.commit()
             compare(v2.value, 21)
+            c2.when = true
+            s2.commit()
+            compare(v2.value, 42)
         }
     }
 
