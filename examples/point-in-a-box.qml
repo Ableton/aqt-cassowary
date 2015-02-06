@@ -13,19 +13,15 @@ ApplicationWindow {
     }
 
     Solver {
-        id: system
-        debug: true
-    }
-
-    Solver {
-        extend: system
-
         Variable { id: centerY }
         Variable { id: circleX; }
         Variable { id: circleY; }
         Variable { id: marginX; initial: 100 }
 
-        Stay { target: marginX; strength: Strength.Required; weight: 100 }
+        Stay {
+            target: marginX
+            strength: Strength.Required
+        }
 
         Edit {
             id: editCircleX
