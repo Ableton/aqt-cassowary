@@ -46,6 +46,7 @@ Context::Context(Callback schedule)
   : mSchedule(std::move(schedule))
 {
   mSolver.set_autosolve(false);
+  //mSolver.set_auto_reset_stay_constants(false);
 }
 
 void Context::defer(Callback fn)
@@ -77,8 +78,11 @@ void Context::schedule()
 
 void Context::resolve()
 {
+  //mSolver.reset_stay_constants();
   mSolver.solve();
+  //mSolver.reset_stay_constants();
   mSolver.resolve();
+  //mSolver.reset_stay_constants();
 }
 
 namespace {
