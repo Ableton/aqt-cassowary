@@ -38,6 +38,7 @@ public:
   Q_SIGNAL void debugChanged(bool debug);
 
 protected:
+  void updatePolish() override;
   void componentComplete() override;
   std::shared_ptr<Context> provided() override;
   void addIn(Context&) override {}

@@ -25,6 +25,8 @@
 ABL_DISABLE_WARNINGS
 #include <QtCore/QTimer>
 #include <QtCore/QDebug>
+#include <QtCore/QPointer>
+#include <QtQuick/QQuickItem>
 #include <rhea/simplex_solver.hpp>
 #include <rhea/iostream.hpp>
 #include <boost/lexical_cast.hpp>
@@ -42,15 +44,18 @@ struct ContextError : std::runtime_error
 class Context : public std::enable_shared_from_this<Context>
 {
 public:
-  using DeferredCallback = std::function<void()>;
+  using Id = std::size_t;
+  using Callback = std::function<void()>;
 
   bool debug = false;
 
-  Context();
+  Context(Callback cb);
 
   rhea::simplex_solver& solver() { return mSolver; }
 
-  void defer(DeferredCallback fn);
+  void add(Id id, Callback fn);
+  void remove(Id id, Callback fn);
+  void defer(Callback fn);
   void commit();
   void resolve();
 
@@ -66,17 +71,23 @@ private:
   void schedule();
 
   void logImpl(QDebug&&) {}
+
   template <typename Arg, typename ...Args>
+#ifndef NDEBUG
   void logImpl(QDebug&& out, Arg&& arg, Args&&... args)
   {
     out << boost::lexical_cast<std::string>(std::forward<Arg>(arg)).c_str();
     logImpl(std::move(out), std::forward<Args>(args)...);
   }
+#else
+  void logImpl(QDebug&&, Arg&&, Args&&...) {}
+#endif
 
-
+  Callback mSchedule;
   bool mCommiting = false;
-  std::queue<DeferredCallback> mDeferred;
-  QTimer mTimer;
+  std::unordered_map<Id, Callback> mAdditions;
+  std::unordered_map<Id, Callback> mRemovals;
+  std::vector<Callback> mDeferred;
   rhea::simplex_solver mSolver;
 };
 

@@ -61,16 +61,11 @@ void Contextual::defer(QJSValue cb)
   });
 }
 
-void Contextual::defer(Context::DeferredCallback cb)
+void Contextual::defer(Context::Callback cb)
 {
   auto ctx = context();
   if (ctx) {
-    auto guard = QPointer<QObject>{ this };
-    ctx->defer([guard, cb] {
-      if (guard) {
-        cb();
-      }
-    });
+    ctx->defer(guarded(cb));
   } else {
     cb();
   }
@@ -108,29 +103,16 @@ std::shared_ptr<const Context> Contextual::context() const
 
 void Contextual::add()
 {
-  defer_([this] {
-    if (mContext) {
-      addIn(*mContext);
-    }
-  });
+  if (mContext) {
+    addIn(*mContext);
+  }
 }
 
 void Contextual::remove()
 {
-  defer_([this] {
-    if (mContext) {
-      removeIn(*mContext);
-    }
-  });
-}
-
-void Contextual::update(Context::DeferredCallback cb)
-{
-  remove();
-  defer_([this, cb] {
-    cb();
-  });
-  add();
+  if (mContext) {
+    removeIn(*mContext);
+  }
 }
 
 void Contextual::updateContext()
@@ -151,9 +133,7 @@ void Contextual::updateContext()
   if (context != mContext) {
     update([this, context] {
       mContext = context;
-      defer_([this] {
-        Q_EMIT contextChanged();
-      });
+      Q_EMIT contextChanged();
     });
   }
 }

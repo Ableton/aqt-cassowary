@@ -31,19 +31,31 @@ ConstraintBase::ConstraintBase(QQuickItem* pParent,
   , mWeight(weight)
 {
   connect(this, &ConstraintBase::strengthChanged, [this](Strength::Types) {
-    update([this] {
-      if (!mConstraint.is_nil()) {
+    if (!mConstraint.is_nil()) {
+      auto ctx = context();
+      auto installed = ctx && ctx->solver().contains_constraint(mConstraint);
+      if (!installed) {
         mConstraint.change_strength(Strength::impl(mStrength));
+      } else {
+        log("Changing strength", mStrength, "->", mConstraint);
+        ctx->solver().change_strength(mConstraint, Strength::impl(mStrength));
+        ctx->defer([]{});
       }
-    });
+    }
   });
 
   connect(this, &ConstraintBase::weightChanged, [this](double) {
-    update([this] {
-      if (!mConstraint.is_nil()) {
+    if (!mConstraint.is_nil()) {
+      auto ctx = context();
+      auto installed = ctx && ctx->solver().contains_constraint(mConstraint);
+      if (!installed) {
         mConstraint.change_weight(mWeight);
+      } else {
+        log("Changing weight", mWeight, "->", mConstraint);
+        ctx->solver().change_weight(mConstraint, mWeight);
+        ctx->defer([]{});
       }
-    });
+    }
   });
 
   connect(this, &ConstraintBase::whenChanged, [this](bool when) {
@@ -67,24 +79,32 @@ void ConstraintBase::set(std::shared_ptr<rhea::abstract_constraint> constraint)
 void ConstraintBase::addIn(Context& ctx)
 {
   if (when() && !mConstraint.is_nil()) {
-    log("Add:", mConstraint);
-    try {
-      ctx.solver().add_constraint(mConstraint);
-    } catch (const rhea::required_failure&) {
-      log("Required constraint can't be satisfied:", mConstraint);
-    }
+    auto constraint = mConstraint;
+    auto id = constraint.hash();
+    ctx.add(id, guarded([constraint, this, &ctx] {
+      log("Add:", constraint);
+      try {
+        ctx.solver().add_constraint(constraint);
+      } catch (const rhea::required_failure&) {
+        log("Required constraint can't be satisfied:", constraint);
+      }
+    }));
   }
 }
 
 void ConstraintBase::removeIn(Context& ctx)
 {
-  if (!mConstraint.is_nil()) {
-    try {
-      log("Remove:", mConstraint);
-      ctx.solver().remove_constraint(mConstraint);
-    } catch (const rhea::constraint_not_found&) {
-      log("Constraint not found:", mConstraint);
-    }
+  if (when() && !mConstraint.is_nil()) {
+    auto constraint = mConstraint;
+    auto id = constraint.hash();
+    ctx.remove(id, guarded([constraint, this, &ctx] {
+      try {
+        log("Remove:", mConstraint);
+        ctx.solver().remove_constraint(constraint);
+      } catch (const rhea::constraint_not_found&) {
+        log("Constraint not found:", constraint);
+      }
+    }));
   }
 }
 

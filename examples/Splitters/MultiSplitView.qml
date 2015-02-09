@@ -46,7 +46,8 @@ Item {
         Variable { id: vTotalSize }
         Edit {
             target: vTotalSize
-            strength: Strength.Required
+            strength: Strength.Strong
+            weight: 100000
             suggested: orientation == Qt.Horizontal ? root.width : root.height
         }
     }

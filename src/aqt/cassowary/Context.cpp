@@ -42,25 +42,36 @@ auto guard(Fn&& fn) -> Guard<typename std::decay<Fn>::type>
 
 } // anonymous namespace
 
-Context::Context()
+Context::Context(Callback schedule)
+  : mSchedule(std::move(schedule))
 {
   mSolver.set_autosolve(false);
-  mTimer.setSingleShot(true);
-  QObject::connect(&mTimer, &QTimer::timeout, &mTimer, [this] {
-    commit();
-  });
 }
 
-void Context::defer(DeferredCallback fn)
+void Context::defer(Callback fn)
 {
-  mDeferred.emplace(std::move(fn));
+  mDeferred.emplace_back(std::move(fn));
   schedule();
+}
+
+void Context::add(Id id, Callback fn)
+{
+  if (!mRemovals.erase(id)) {
+    mAdditions[id] = std::move(fn);
+  }
+}
+
+void Context::remove(Id id, Callback fn)
+{
+  if (!mAdditions.erase(id)) {
+    mRemovals[id] = std::move(fn);
+  }
 }
 
 void Context::schedule()
 {
-  if (!mCommiting && !mDeferred.empty() && !mTimer.isActive()) {
-    mTimer.start();
+  if (mSchedule && mDeferred.size() == 1) {
+    mSchedule();
   }
 }
 
@@ -70,21 +81,53 @@ void Context::resolve()
   mSolver.resolve();
 }
 
+namespace {
+
+template <typename T>
+T swapDefault(T& orig)
+{
+  T def;
+  using std::swap;
+  swap(orig, def);
+  return def;
+}
+
+void call(Context::Callback& fn) { fn(); }
+void call(std::pair<const Context::Id, Context::Callback>& p) { p.second(); }
+
+template <typename T>
+void dispatch(T& orig)
+{
+  auto fns = swapDefault(orig);
+  for (auto& fn : fns) {
+    call(fn);
+  }
+}
+
+} // anoynomus namespace
+
 void Context::commit()
 {
   if (!mCommiting) {
     auto c = shared_from_this();
     auto g = guard([this] { mCommiting = false; });
-    auto doStuff = !mDeferred.empty();
+    auto dispatched = false;
     mCommiting = true;
 
-    log("Commiting...", mDeferred.size());
-    while (!mDeferred.empty()) {
-      mDeferred.front()();
-      mDeferred.pop();
+    log("Commiting... ");
+    while(!mRemovals.empty()  ||
+          !mAdditions.empty() ||
+          !mDeferred.empty()) {
+      log("[-", mRemovals.size(),  "]",
+          "[+", mAdditions.size(), "]",
+          "[!", mDeferred.size(),  "]");
+      dispatched = true;
+      dispatch(mRemovals);
+      dispatch(mAdditions);
+      dispatch(mDeferred);
     }
 
-    if (doStuff) {
+    if (dispatched) {
       resolve();
     }
     log("...commit finished");
