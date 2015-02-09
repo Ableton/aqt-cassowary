@@ -32,6 +32,26 @@ TestScene {
         Solver {}
     }
 
+    Component {
+        id: solverWithConstraint
+        Solver {
+            property alias variable: variable
+            property alias constraint: constraint
+            Variable { id: variable }
+            Constraint {
+                id: constraint
+                expr: eq(variable, 42)
+                when: false
+            }
+            Constraint {
+                id: constraint2
+                expr: eq(variable, 0)
+                strength: Strength.Weak
+            }
+            Rectangle { x: variable.value }
+        }
+    }
+
     TestCase {
         when: windowShown
 
@@ -64,6 +84,29 @@ TestScene {
             // @todo this causes the thingy to crash.  It is unclear
             // to me whether it is our fault or a Qt bug.
             //   solver2.destroy()
+        }
+
+        function test_variableUpdatesAfterAddingConstraint() {
+            var solver2 = solverWithConstraint.createObject(scene, {});
+            solver2.defer(function () {})
+            compare(solver2.variable.value, 0)
+            waitForRendering(solver2)
+            compare(solver2.variable.value, 0)
+            solver2.constraint.when = true
+            waitForRendering(solver2)
+            compare(solver2.variable.value, 42)
+        }
+
+        function test_variableUpdatesAfterRemovingConstraint() {
+            var solver2 = solverWithConstraint.createObject(scene, {});
+            solver2.defer(function () {})
+            compare(solver2.variable.value, 0)
+            solver2.constraint.when = true
+            waitForRendering(solver2)
+            compare(solver2.variable.value, 42)
+            solver2.constraint.when = false
+            waitForRendering(solver2)
+            compare(solver2.variable.value, 0)
         }
 
         function test_recursiveCommitProtection() {

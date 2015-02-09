@@ -58,6 +58,7 @@ void Context::add(Id id, Callback fn)
 {
   if (!mRemovals.erase(id)) {
     mAdditions[id] = std::move(fn);
+    schedule();
   }
 }
 
@@ -65,12 +66,13 @@ void Context::remove(Id id, Callback fn)
 {
   if (!mAdditions.erase(id)) {
     mRemovals[id] = std::move(fn);
+    schedule();
   }
 }
 
 void Context::schedule()
 {
-  if (mSchedule && mDeferred.size() == 1) {
+  if (mSchedule) {
     mSchedule();
   }
 }
