@@ -111,20 +111,20 @@ bool commitConstraints(
   std::for_each(
     remove.begin(), remove.end(),
     rheaGuard([&] (const rhea::constraint& c) {
-      ctx.log("Remove:", c);
+      ctx.log("  Remove:", c);
       ctx.solver().remove_constraint(c);
     }));
 
   std::for_each(
     add.begin(), add.end(),
     rheaGuard([&] (const rhea::constraint& c) {
-      ctx.log("Add:", c);
+      ctx.log("  Add:", c);
       ctx.solver().add_constraint(c);
     }));
 
   if (solve || !remove.empty() || !add.empty()) {
     rheaGuard([&] {
-      ctx.log("Solving");
+      ctx.log(" Solving");
       ctx.solver().solve();
     })();
     return true;
@@ -140,13 +140,13 @@ bool commitSuggestions(
   std::for_each(
     suggestions.begin(), suggestions.end(),
     rheaGuard([&] (const std::pair<rhea::variable, double>& s) {
-      ctx.log("Suggesting:", s.first, "=", s.second);
+      ctx.log("  Suggesting:", s.first, "=", s.second);
       ctx.solver().suggest_value(s.first, s.second);
     }));
 
   if (!suggestions.empty()) {
     rheaGuard([&] {
-      ctx.log("Resolving");
+      ctx.log(" Resolving");
       ctx.solver().resolve();
     })();
     return true;
