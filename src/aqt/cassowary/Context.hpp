@@ -23,6 +23,7 @@
 #include <ableton/build_system/Warnings.hpp>
 
 ABL_DISABLE_WARNINGS
+#include <QtCore/QLoggingCategory>
 #include <QtCore/QTimer>
 #include <QtCore/QDebug>
 #include <QtCore/QPointer>
@@ -35,6 +36,8 @@ ABL_RESTORE_WARNINGS
 
 namespace aqt {
 namespace cassowary {
+
+Q_DECLARE_LOGGING_CATEGORY(Logging)
 
 struct ContextError : std::runtime_error
 {
@@ -61,26 +64,29 @@ public:
   void requestSolve();
 
   template <typename ...Args>
-  void log(Args&&... args)
+  void log(Args&& ...args)
   {
     if (debug) {
-      logImpl(qDebug(), "[Aqt.Cassowary]", std::forward<Args>(args)...);
+      qCDebug(Logging,)
+        << format(std::ostringstream{}, std::forward<Args>(args)...).c_str();
     }
   }
 
 private:
-  void schedule();
-  void logImpl(QDebug&&) {}
-  template <typename Arg, typename ...Args>
-#ifndef NDEBUG
-  void logImpl(QDebug&& out, Arg&& arg, Args&&... args)
+  std::string format(std::ostringstream&& s)
   {
-    out << boost::lexical_cast<std::string>(std::forward<Arg>(arg)).c_str();
-    logImpl(std::move(out), std::forward<Args>(args)...);
+    return s.str();
   }
-#else
-  void logImpl(QDebug&&, Arg&&, Args&&...) {}
-#endif
+
+  template <typename T, typename ...Ts>
+  std::string format(std::ostringstream&& s, T&& x, Ts&&... xs)
+  {
+    s << x;
+    if (sizeof...(xs) > 0) s << " ";
+    return format(std::move(s), std::forward<Ts>(xs)...);
+  }
+
+  void schedule();
 
   Callback mSchedule;
   bool mCommiting = false;
@@ -103,8 +109,7 @@ struct RheaGuard {
     try {
       return fn(std::forward<Args>(args)...);
     } catch (rhea::error& err) {
-      qWarning()
-        << "[Aqt.Cassowary]"
+      qCWarning(Logging,)
         << "RHEA ERROR:"
         << err.what();
     }

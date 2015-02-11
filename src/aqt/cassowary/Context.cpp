@@ -23,6 +23,8 @@
 namespace aqt {
 namespace cassowary {
 
+Q_LOGGING_CATEGORY(Logging, "aqt.cassowary")
+
 namespace {
 
 template <typename Fn>
