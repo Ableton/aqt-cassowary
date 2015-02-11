@@ -71,16 +71,6 @@ void Contextual::defer(Context::Callback cb)
   }
 }
 
-void Contextual::resolve()
-{
-  auto ctx = context();
-  if (ctx) {
-    ctx->resolve();
-  } else {
-    qWarning() << "Resolve on element with no context";
-  }
-}
-
 void Contextual::commit()
 {
   auto ctx = context();

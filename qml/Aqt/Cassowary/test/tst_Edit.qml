@@ -87,4 +87,30 @@ TestScene {
             compare(v2.value, 42)
         }
     }
+
+    TestCase {
+        Solver {
+            id: s2
+            Variable {
+                id: v3
+                Edit {
+                    id: e3
+                    when: false
+                }
+            }
+        }
+        function test_remembersSuggestiosnUntilEnabled() {
+            s2.commit()
+            e3.suggested = 42
+            s2.commit()
+            compare(v3.value, 0)
+            e3.suggested = 64
+            s2.commit()
+            compare(v3.value, 0)
+
+            e3.when = true
+            s2.commit()
+            compare(v3.value, 64)
+        }
+    }
 }

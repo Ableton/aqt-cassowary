@@ -53,11 +53,12 @@ public:
 
   rhea::simplex_solver& solver() { return mSolver; }
 
-  void add(Id id, Callback fn);
-  void remove(Id id, Callback fn);
-  void defer(Callback fn);
+  void add(rhea::constraint c);
+  void remove(rhea::constraint c);
+  void suggest(rhea::variable v, double x);
+  void defer(Callback);
   void commit();
-  void resolve();
+  void requestSolve();
 
   template <typename ...Args>
   void log(Args&&... args)
@@ -69,9 +70,7 @@ public:
 
 private:
   void schedule();
-
   void logImpl(QDebug&&) {}
-
   template <typename Arg, typename ...Args>
 #ifndef NDEBUG
   void logImpl(QDebug&& out, Arg&& arg, Args&&... args)
@@ -85,11 +84,82 @@ private:
 
   Callback mSchedule;
   bool mCommiting = false;
-  std::unordered_map<Id, Callback> mAdditions;
-  std::unordered_map<Id, Callback> mRemovals;
+  bool mNeedsSolve = false;
+  std::unordered_set<rhea::constraint> mAdditions;
+  std::unordered_set<rhea::constraint> mRemovals;
+  std::unordered_map<rhea::variable, double> mSuggestions;
   std::vector<Callback> mDeferred;
   rhea::simplex_solver mSolver;
 };
+
+template <typename Fn>
+struct RheaGuard {
+  Fn fn;
+
+  template <typename ...Args>
+  auto operator()(Args&&... args)
+    -> decltype(fn(std::forward<Args>(args)...))
+  {
+    try {
+      return fn(std::forward<Args>(args)...);
+    } catch (rhea::error& err) {
+      qWarning()
+        << "[Aqt.Cassowary]"
+        << "RHEA ERROR:"
+        << err.what();
+    }
+  }
+};
+
+template <typename Fn>
+auto rheaGuard(Fn&& fn)
+  -> RheaGuard<typename std::decay<Fn>::type>
+{
+  return { fn };
+};
+
+struct ValueTag {};
+struct WeightTag {};
+struct StrengthTag {};
+
+inline std::ostream& operator<<(std::ostream& os, ValueTag) { return os << "value"; }
+inline std::ostream& operator<<(std::ostream& os, WeightTag) { return os << "weight"; }
+inline std::ostream& operator<<(std::ostream& os, StrengthTag) { return os << "strength"; }
+
+inline bool contains(rhea::simplex_solver& s, const rhea::variable& v)
+{ return s.contains_variable(v); }
+inline bool contains(rhea::simplex_solver& s, const rhea::constraint& c)
+{ return s.contains_constraint(c); }
+inline void change(rhea::variable& v, ValueTag, double x)
+{ v.change_value(x); }
+inline void change(rhea::constraint& c, StrengthTag, rhea::strength x)
+{ c.change_strength(x); }
+inline void change(rhea::constraint& c, WeightTag, double x)
+{ c.change_weight(x); }
+inline void change(rhea::simplex_solver& s, rhea::variable& v, ValueTag, double x)
+{ s.suggest(v, x); }
+inline void change(rhea::simplex_solver& s, rhea::constraint& c, StrengthTag, rhea::strength x)
+{ s.change_strength(c, x); }
+inline void change(rhea::simplex_solver& s, rhea::constraint& c, WeightTag, double x)
+{ s.change_weight(c, x); }
+
+template <typename EntityT, typename ParameterTagT, typename ValueT>
+void change(std::shared_ptr<Context> ctx, EntityT& e, ParameterTagT t, ValueT&& x)
+{
+  rheaGuard([&] {
+    if (ctx) ctx->log("Changing", e, "[", t, "] =", x);
+    if (!e.is_nil()) {
+      auto contained = ctx && contains(ctx->solver(), e);
+      if (contained) {
+        change(ctx->solver(), e, t, std::forward<ValueT>(x));
+        ctx->requestSolve();
+      }
+      else {
+        change(e, t, std::forward<ValueT>(x));
+      }
+    }
+  })();
+}
 
 } // namespace cassowary
 } // namespace aqt
