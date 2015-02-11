@@ -32,6 +32,7 @@ Item {
             strength: Strength.Medium
             enabled: anyDragging
             weight: mouse.drag.active ? 20 : 1
+            suggested: vPosition.value
             Binding on suggested {
                 when: mouse.drag.active
                 value: orientation == Qt.Horizontal ? dragger.x : dragger.y
