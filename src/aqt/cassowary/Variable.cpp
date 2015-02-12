@@ -45,6 +45,11 @@ Variable::Variable(QQuickItem* pParent)
   });
 }
 
+void Variable::addIn(Context&)
+{
+  setValue(mInitial);
+}
+
 double Variable::value() const
 {
   return mVariable.value();

@@ -72,4 +72,29 @@ TestScene {
             compare(spy2.count, 1)
         }
     }
+
+
+    TestCase {
+        Solver {
+            id: s2
+            Variable {
+                id: v3
+                Stay { strength: Strength.Medium }
+            }
+            Variable {
+                id: v4
+                initial: 42
+                Stay { strength: Strength.Weak }
+            }
+            Constraint {
+                expr: eq(100, plus(v4, v3))
+            }
+        }
+
+        function test_explicitInitialValuesAreRespectedOverVariablesWithoutInitial() {
+            s2.commit()
+            compare(v3.value, 58)
+            compare(v4.value, 42)
+        }
+    }
 }

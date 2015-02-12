@@ -74,15 +74,19 @@ void Context::remove(rhea::constraint c)
 
 void Context::suggest(rhea::variable v, double x)
 {
-  mSuggestions[v] = x;
-  schedule();
+  if (!std::isnan(x)) {
+    mSuggestions[v] = x;
+    schedule();
+  }
 }
 
 void Context::suggestOnce(rhea::variable v, double x)
 {
-  mEdits.insert(v);
-  mSuggestions[v] = x;
-  schedule();
+  if (!std::isnan(x)) {
+    mEdits.insert(v);
+    mSuggestions[v] = x;
+    schedule();
+  }
 }
 
 void Context::requestSolve()

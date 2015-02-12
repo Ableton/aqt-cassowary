@@ -48,7 +48,7 @@ public:
   const rhea::variable& variableImpl() const;
 
 protected:
-  void addIn(Context&) override {}
+  void addIn(Context&) override;
   void removeIn(Context&) override {}
 
 private:
