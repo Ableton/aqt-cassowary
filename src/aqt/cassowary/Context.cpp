@@ -78,6 +78,13 @@ void Context::suggest(rhea::variable v, double x)
   schedule();
 }
 
+void Context::suggestOnce(rhea::variable v, double x)
+{
+  mEdits.insert(v);
+  mSuggestions[v] = x;
+  schedule();
+}
+
 void Context::requestSolve()
 {
   mNeedsSolve = true;
@@ -132,25 +139,46 @@ bool commitConstraints(
   return false;
 }
 
-template <typename SuggestionsT>
+template <typename SuggestionsT, typename EditsT>
 bool commitSuggestions(
   Context& ctx,
-  const SuggestionsT& suggestions)
+  const SuggestionsT& suggestions,
+  const EditsT& edits)
 {
-  std::for_each(
-    suggestions.begin(), suggestions.end(),
-    rheaGuard([&] (const std::pair<rhea::variable, double>& s) {
-      ctx.log("  Suggesting:", s.first, "=", s.second);
-      ctx.solver().suggest_value(s.first, s.second);
-    }));
-
   if (!suggestions.empty()) {
+    std::for_each(
+      edits.begin(), edits.end(),
+      rheaGuard([&] (const rhea::variable& v) {
+        ctx.log("  Add edit var:", v);
+        ctx.solver().add_edit_var(v);
+      }));
+
+    rheaGuard([&] {
+      ctx.log("  Reseting stay constants");
+      ctx.solver().reset_stay_constants();
+    })();
+
+    std::for_each(
+      suggestions.begin(), suggestions.end(),
+      rheaGuard([&] (const std::pair<rhea::variable, double>& s) {
+        ctx.log("  Suggesting:", s.first, "=", s.second);
+        ctx.solver().suggest_value(s.first, s.second);
+      }));
+
     rheaGuard([&] {
       ctx.log(" Resolving");
       ctx.solver().resolve();
     })();
+
+    std::for_each(
+      edits.begin(), edits.end(),
+      rheaGuard([&] (const rhea::variable& v) {
+        ctx.log("  Remove edit var:", v);
+        ctx.solver().remove_edit_var(v);
+      }));
     return true;
   }
+
   return false;
 }
 
@@ -171,12 +199,16 @@ void Context::commit()
     mCommiting = true;
 
     log("Commiting... ");
-    while(commitConstraints(
-            *this, swapD(mRemovals), swapD(mAdditions), swapD(mNeedsSolve))
-       || commitSuggestions(
-         *this, swapD(mSuggestions))
-       || commitDeferred(
-         *this, swapD(mDeferred)));
+    bool notDone = true;
+    while (notDone) {
+      notDone = false;
+      notDone |= commitConstraints(
+        *this, swapD(mRemovals), swapD(mAdditions), swapD(mNeedsSolve));
+      notDone |= commitSuggestions(
+        *this, swapD(mSuggestions), swapD(mEdits));
+      notDone |= commitDeferred(
+        *this, swapD(mDeferred));
+    }
     log("...commit finished");
   }
 }

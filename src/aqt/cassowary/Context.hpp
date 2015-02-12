@@ -59,6 +59,7 @@ public:
   void add(rhea::constraint c);
   void remove(rhea::constraint c);
   void suggest(rhea::variable v, double x);
+  void suggestOnce(rhea::variable v, double x);
   void defer(Callback);
   void commit();
   void requestSolve();
@@ -94,6 +95,7 @@ private:
   std::unordered_set<rhea::constraint> mAdditions;
   std::unordered_set<rhea::constraint> mRemovals;
   std::unordered_map<rhea::variable, double> mSuggestions;
+  std::unordered_set<rhea::variable> mEdits;
   std::vector<Callback> mDeferred;
   rhea::simplex_solver mSolver;
 };

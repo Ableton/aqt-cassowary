@@ -37,8 +37,9 @@ class Variable : public Contextual
 public:
   Variable(QQuickItem* pParent = nullptr);
 
-  Q_PROPERTY(double value READ value NOTIFY valueChanged)
+  Q_PROPERTY(double value READ value WRITE setValue NOTIFY valueChanged)
   double value() const;
+  void setValue(double);
   Q_SIGNAL void valueChanged(double value);
 
   Q_PROPERTY(double initial MEMBER mInitial NOTIFY initialChanged)

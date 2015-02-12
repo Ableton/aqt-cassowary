@@ -99,6 +99,7 @@ TestScene {
                 }
             }
         }
+
         function test_remembersSuggestiosnUntilEnabled() {
             s2.commit()
             e3.suggested = 42
@@ -111,6 +112,55 @@ TestScene {
             e3.when = true
             s2.commit()
             compare(v3.value, 64)
+        }
+    }
+
+    TestCase {
+        Solver {
+            id: s3
+            Variable {
+                id: v4
+                Stay {}
+                Edit {
+                    id: e4
+                    when: false
+                }
+                Constraint {
+                    expr: leq(v4, 100)
+                }
+            }
+        }
+
+        function test_variablesCanBeEditedDirectlyRespectingConstraints() {
+            v4.value = 42
+            s3.commit()
+            compare(v4.value, 42)
+
+            v4.value = 142;
+            s3.commit()
+            compare(v4.value, 100)
+        }
+
+        function test_variablesCanBeEditedDirectlyWhileAnEditIsGoingOn() {
+            v4.value = 42
+            e4.suggested = 21
+            e4.when = true
+            s3.commit()
+            compare(v4.value, 21)
+
+            v4.value = 12
+            s3.commit()
+            compare(v4.value, 12)
+
+            e4.suggested = 7
+            s3.commit()
+            compare(v4.value, 7)
+
+            e4.when = false
+            v4.value = 5
+            e4.suggested = 100
+            s3.commit()
+            compare(v4.value, 5)
         }
     }
 }

@@ -47,6 +47,12 @@ double Variable::value() const
   return mVariable.value();
 }
 
+void Variable::setValue(double value)
+{
+  auto ctx = context();
+  if (ctx) ctx->suggestOnce(mVariable, value);
+}
+
 const rhea::variable& Variable::variableImpl() const
 {
   return mVariable;
