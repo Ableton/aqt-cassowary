@@ -53,6 +53,7 @@ protected:
 
 private:
   rhea::variable mVariable;
+  double mLastValue = 0;
   double mInitial = std::numeric_limits<double>::quiet_NaN();
 };
 

@@ -26,8 +26,11 @@ namespace cassowary {
 Variable::Variable(QQuickItem* pParent)
   : Contextual(pParent)
   , mVariable([this] (double value) {
+    if (!rhea::near_zero(value - mLastValue)) {
+      mLastValue = value;
       Q_EMIT valueChanged(value);
-    })
+    }
+  })
 {
   connect(this, &Variable::initialChanged, [this] (double initial) {
     auto ctx = context();
