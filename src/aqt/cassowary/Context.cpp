@@ -166,7 +166,11 @@ bool commitSuggestions(
       suggestions.begin(), suggestions.end(),
       rheaGuard([&] (const std::pair<rhea::variable, double>& s) {
         ctx.log("  Suggesting:", s.first, "=", s.second);
-        ctx.solver().suggest_value(s.first, s.second);
+        try {
+          ctx.solver().suggest_value(s.first, s.second);
+        } catch (const rhea::edit_misuse&) {
+          ctx.log("  Suggestion had no effect");
+        }
       }));
 
     rheaGuard([&] {

@@ -112,6 +112,11 @@ TestScene {
             e3.when = true
             s2.commit()
             compare(v3.value, 64)
+
+            e3.suggested = 42
+            e3.when = false
+            s2.commit()
+            compare(v3.value, 64)
         }
     }
 
