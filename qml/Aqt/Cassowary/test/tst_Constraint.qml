@@ -143,28 +143,7 @@ TestScene {
 
     TestCase {
         Solver {
-            id: s3
-            Variable { id: v6 }
-            Constraint { id: c5 }
-        }
-
-        function test_canExplicitlyResolveSystem() {
-            s3.commit() // propagate context
-            c5.expr = c5.eq(v6, 42)
-            s3.defer(function () {
-                compare(v6.value, 0)
-                s3.resolve()
-                compare(v6.value, 42)
-            })
-            s3.commit()
-            compare(v6.value, 42)
-        }
-    }
-
-    TestCase {
-        Solver {
             id: s4
-            debug: true
             property bool toggle: true
             Variable { id: v7 }
             Constraint {
@@ -190,4 +169,26 @@ TestScene {
             compare(v7.value, 21)
         }
     }
+
+    TestCase {
+        Solver {
+            id: s5
+            Variable { id: v8 }
+            Variable { id: v9 }
+            Constraint {
+                expr: eq(v8, 21)
+            }
+            Constraint {
+                when: v8.value > 0
+                expr: eq(v9, 42)
+            }
+        }
+
+        function test_constraintDependsOnOtherConstraint() {
+            s5.commit()
+            compare(v8.value, 21)
+            compare(v9.value, 42)
+        }
+    }
+
 }

@@ -23,6 +23,8 @@
 namespace aqt {
 namespace cassowary {
 
+Q_LOGGING_CATEGORY(Logging, "aqt.cassowary")
+
 namespace {
 
 template <typename Fn>
@@ -54,20 +56,43 @@ void Context::defer(Callback fn)
   schedule();
 }
 
-void Context::add(Id id, Callback fn)
+void Context::add(rhea::constraint c)
 {
-  if (!mRemovals.erase(id)) {
-    mAdditions[id] = std::move(fn);
+  if (!c.is_nil() && !mRemovals.erase(c)) {
+    mAdditions.emplace(std::move(c));
     schedule();
   }
 }
 
-void Context::remove(Id id, Callback fn)
+void Context::remove(rhea::constraint c)
 {
-  if (!mAdditions.erase(id)) {
-    mRemovals[id] = std::move(fn);
+  if (!c.is_nil() && !mAdditions.erase(c)) {
+    mRemovals.emplace(std::move(c));
     schedule();
   }
+}
+
+void Context::suggest(rhea::variable v, double x)
+{
+  if (!std::isnan(x)) {
+    mSuggestions[v] = x;
+    schedule();
+  }
+}
+
+void Context::suggestOnce(rhea::variable v, double x)
+{
+  if (!std::isnan(x)) {
+    mEdits.insert(v);
+    mSuggestions[v] = x;
+    schedule();
+  }
+}
+
+void Context::requestSolve()
+{
+  mNeedsSolve = true;
+  schedule();
 }
 
 void Context::schedule()
@@ -77,60 +102,120 @@ void Context::schedule()
   }
 }
 
-void Context::resolve()
-{
-  mSolver.solve();
-  mSolver.resolve();
-}
-
 namespace {
 
 template <typename T>
-T swapDefault(T& orig)
+T swapD(T& orig)
 {
-  T def;
   using std::swap;
+
+  auto def = T{};
   swap(orig, def);
   return def;
 }
 
-void call(Context::Callback& fn) { fn(); }
-void call(std::pair<const Context::Id, Context::Callback>& p) { p.second(); }
-
-template <typename T>
-void dispatch(T& orig)
+template <typename ConstraintsT>
+bool commitConstraints(
+  Context& ctx,
+  const ConstraintsT& remove, const ConstraintsT& add, bool solve)
 {
-  auto fns = swapDefault(orig);
-  for (auto& fn : fns) {
-    call(fn);
+  std::for_each(
+    remove.begin(), remove.end(),
+    rheaGuard([&] (const rhea::constraint& c) {
+      ctx.log("  Remove:", c);
+      ctx.solver().remove_constraint(c);
+    }));
+
+  std::for_each(
+    add.begin(), add.end(),
+    rheaGuard([&] (const rhea::constraint& c) {
+      ctx.log("  Add:", c);
+      ctx.solver().add_constraint(c);
+    }));
+
+  if (solve || !remove.empty() || !add.empty()) {
+    rheaGuard([&] {
+      ctx.log(" Solving");
+      ctx.solver().solve();
+    })();
+    return true;
   }
+  return false;
 }
 
-} // anoynomus namespace
+template <typename SuggestionsT, typename EditsT>
+bool commitSuggestions(
+  Context& ctx,
+  const SuggestionsT& suggestions,
+  const EditsT& edits)
+{
+  if (!suggestions.empty()) {
+    std::for_each(
+      edits.begin(), edits.end(),
+      rheaGuard([&] (const rhea::variable& v) {
+        ctx.log("  Add edit var:", v);
+        ctx.solver().add_edit_var(v);
+      }));
+
+    rheaGuard([&] {
+      ctx.log("  Reseting stay constants");
+      ctx.solver().reset_stay_constants();
+    })();
+
+    std::for_each(
+      suggestions.begin(), suggestions.end(),
+      rheaGuard([&] (const std::pair<rhea::variable, double>& s) {
+        ctx.log("  Suggesting:", s.first, "=", s.second);
+        try {
+          ctx.solver().suggest_value(s.first, s.second);
+        } catch (const rhea::edit_misuse&) {
+          ctx.log("  Suggestion had no effect");
+        }
+      }));
+
+    rheaGuard([&] {
+      ctx.log(" Resolving");
+      ctx.solver().resolve();
+    })();
+
+    std::for_each(
+      edits.begin(), edits.end(),
+      rheaGuard([&] (const rhea::variable& v) {
+        ctx.log("  Remove edit var:", v);
+        ctx.solver().remove_edit_var(v);
+      }));
+    return true;
+  }
+
+  return false;
+}
+
+template <typename DeferredT>
+bool commitDeferred(Context&, const DeferredT& deferred)
+{
+  for (auto& d : deferred) d();
+  return !deferred.empty();
+}
+
+} // anonymous namespace
 
 void Context::commit()
 {
   if (!mCommiting) {
-    auto c = shared_from_this();
-    auto g = guard([this] { mCommiting = false; });
-    auto dispatched = false;
+    auto _ = shared_from_this();
+    auto __ = guard([this] { mCommiting = false; });
     mCommiting = true;
 
     log("Commiting... ");
-    while(!mRemovals.empty()  ||
-          !mAdditions.empty() ||
-          !mDeferred.empty()) {
-      log("[-", mRemovals.size(),  "]",
-          "[+", mAdditions.size(), "]",
-          "[!", mDeferred.size(),  "]");
-      dispatched = true;
-      dispatch(mRemovals);
-      dispatch(mAdditions);
-      dispatch(mDeferred);
-    }
-
-    if (dispatched) {
-      resolve();
+    bool notDone = true;
+    while (notDone) {
+      notDone = false;
+      notDone |= commitConstraints(
+        *this, swapD(mRemovals), swapD(mAdditions), swapD(mNeedsSolve));
+      notDone |= commitSuggestions(
+        *this, swapD(mSuggestions), swapD(mEdits));
+      notDone |= commitDeferred(
+        *this, swapD(mDeferred));
     }
     log("...commit finished");
   }

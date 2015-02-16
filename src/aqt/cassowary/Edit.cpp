@@ -46,9 +46,7 @@ Edit::Edit(QQuickItem* pParent)
 void Edit::addIn(Context& ctx)
 {
   Targeted::addIn(ctx);
-  defer_([this] {
-    suggest(mSuggested);
-  });
+  suggest(mSuggested);
 }
 
 void Edit::removeIn(Context& ctx)
@@ -58,16 +56,12 @@ void Edit::removeIn(Context& ctx)
 
 void Edit::suggest(double value)
 {
-  if (!std::isnan(value)) {
-    defer_([this, value] {
-      auto ctx = context();
-      auto target = actualTarget();
-      if (when() && ctx && target) {
-        auto& var = target->variableImpl();
-        log("Suggest:", var, "=", value);
-        ctx->solver().suggest_value(var, value);
-      }
-    });
+  if (when() && !std::isnan(value)) {
+    auto ctx = context();
+    auto target = actualTarget();
+    if (ctx && target) {
+      ctx->suggest(target->variableImpl(), value);
+    }
   }
 }
 

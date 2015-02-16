@@ -56,7 +56,9 @@ void Contextual::defer(QJSValue cb)
   defer_([cb]() mutable {
     auto result = cb.call();
     if (result.isError()) {
-      qWarning() << "Error within deferred callback: " << result.toString();
+      qCWarning(Logging,)
+        << "Error within deferred callback: "
+        << result.toString();
     }
   });
 }
@@ -71,23 +73,14 @@ void Contextual::defer(Context::Callback cb)
   }
 }
 
-void Contextual::resolve()
-{
-  auto ctx = context();
-  if (ctx) {
-    ctx->resolve();
-  } else {
-    qWarning() << "Resolve on element with no context";
-  }
-}
-
 void Contextual::commit()
 {
   auto ctx = context();
   if (ctx) {
     ctx->commit();
   } else {
-    qWarning() << "Commit on element with no context";
+    qCWarning(Logging,)
+      << "Commit on element with no context";
   }
 }
 

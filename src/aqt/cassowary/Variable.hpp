@@ -37,8 +37,9 @@ class Variable : public Contextual
 public:
   Variable(QQuickItem* pParent = nullptr);
 
-  Q_PROPERTY(double value READ value NOTIFY valueChanged)
+  Q_PROPERTY(double value READ value WRITE setValue NOTIFY valueChanged)
   double value() const;
+  void setValue(double);
   Q_SIGNAL void valueChanged(double value);
 
   Q_PROPERTY(double initial MEMBER mInitial NOTIFY initialChanged)
@@ -47,12 +48,13 @@ public:
   const rhea::variable& variableImpl() const;
 
 protected:
-  void addIn(Context&) override {}
+  void addIn(Context&) override;
   void removeIn(Context&) override {}
 
 private:
   rhea::variable mVariable;
-  double mInitial = 0.0;
+  double mLastValue = 0;
+  double mInitial = std::numeric_limits<double>::quiet_NaN();
 };
 
 } // namespace cassowary

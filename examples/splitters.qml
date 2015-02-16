@@ -22,6 +22,7 @@ ApplicationWindow {
         MultiSplitView {
             id: splitView
             anchors.fill: parent
+
             //orientation: Qt.Horizontal
 
             ExampleView {

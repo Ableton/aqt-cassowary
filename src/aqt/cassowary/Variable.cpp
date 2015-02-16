@@ -26,23 +26,39 @@ namespace cassowary {
 Variable::Variable(QQuickItem* pParent)
   : Contextual(pParent)
   , mVariable([this] (double value) {
+    if (!rhea::near_zero(value - mLastValue)) {
+      mLastValue = value;
       Q_EMIT valueChanged(value);
-    })
+    }
+  })
 {
   connect(this, &Variable::initialChanged, [this] (double initial) {
     auto ctx = context();
-    if (ctx && ctx->solver().contains_variable(mVariable)) {
-      log("Initial value set after initialization for", mVariable, "=", initial);
-    } else {
-      log("Setting initial value for ", mVariable, "=", initial);
-      mVariable.change_value(initial);
+    if (!std::isnan(initial)) {
+      if (ctx && ctx->solver().contains_variable(mVariable)) {
+        log("Initial value set after initialization for", mVariable, "=", initial);
+      } else {
+        log("Setting initial value for ", mVariable, "=", initial);
+        mVariable.change_value(initial);
+      }
     }
   });
+}
+
+void Variable::addIn(Context&)
+{
+  setValue(mInitial);
 }
 
 double Variable::value() const
 {
   return mVariable.value();
+}
+
+void Variable::setValue(double value)
+{
+  auto ctx = context();
+  if (ctx) ctx->suggestOnce(mVariable, value);
 }
 
 const rhea::variable& Variable::variableImpl() const

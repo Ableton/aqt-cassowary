@@ -8,6 +8,7 @@ Item {
     property list<Item> views
     default property alias __views: root.views
 
+    property alias debug: __solver.debug
     property int orientation: Qt.Vertical
 
     property int modifiers: Qt.NoModifier // Qt.ControlModifier | Qt.AltModifier
@@ -41,7 +42,6 @@ Item {
 
     Solver {
         id: __solver
-        debug: true
 
         Variable { id: vTotalSize }
         Edit {
@@ -115,9 +115,6 @@ Item {
     }
 
     function reconcile() {
-        __handles.forEach(function (h) {
-            h.ePosition.suggested = h.vPosition.value
-        })
         solver.commit()
         solver.defer(function () {
             __wrappers.forEach(function (w) {
@@ -127,7 +124,6 @@ Item {
                 if (!collapsed)
                     w.eSize.suggested = w.vSize.value
             })
-            solver.resolve()
             __handles.forEach(function (h) {
                 h.ePosition.suggested = h.vPosition.value
             })
