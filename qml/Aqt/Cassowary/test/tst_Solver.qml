@@ -127,4 +127,28 @@ TestScene {
             })
         }
     }
+
+    TestCase {
+        when: windowShown
+
+        Solver {
+            id: s1
+            Variable { id: v1; Edit { id: e1; suggested: 0 } }
+            Constraint { id: c1; expr: eq(v1, 42); }
+        }
+
+        function test_intermediateValuesNotSeen() {
+            s1.commit()
+            TestUtils.withConnection(v1.valueChanged, function (value) {
+                compare(value, 12)
+            }, function() {
+                c1.when = false
+                e1.when = true
+                e1.suggested = 12
+                s1.commit()
+                compare(v1.value, 12)
+            })
+            compare(v1.value, 12)
+        }
+    }
 }

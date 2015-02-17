@@ -89,6 +89,12 @@ void Context::suggestOnce(rhea::variable v, double x)
   }
 }
 
+void Context::notify(rhea::variable v, Callback cb)
+{
+  mNotifications[v] = cb;
+  schedule();
+}
+
 void Context::requestSolve()
 {
   mNeedsSolve = true;
@@ -197,6 +203,13 @@ bool commitDeferred(Context&, const DeferredT& deferred)
   return !deferred.empty();
 }
 
+template <typename NotificationT>
+bool commitNotifications(Context&, const NotificationT& notifications)
+{
+  for (auto& n : notifications) n.second();
+  return !notifications.empty();
+}
+
 } // anonymous namespace
 
 void Context::commit()
@@ -216,6 +229,8 @@ void Context::commit()
         *this, swapD(mSuggestions), swapD(mEdits));
       notDone |= commitDeferred(
         *this, swapD(mDeferred));
+      notDone |= commitNotifications(
+        *this, swapD(mNotifications));
     }
     log("...commit finished");
   }
