@@ -11,6 +11,7 @@ Item {
     property color handleColor: "#333"
     property color handleColor2: "#333"
 
+    property bool anyDragging
     readonly property bool dragging: mouse.drag.active
     readonly property alias vPosition: __vPosition
     readonly property alias ePosition: __ePosition
@@ -21,21 +22,27 @@ Item {
 
     Solver {
         extend: root.solver
-        Variable { id: __vPosition }
-        Stay {
-            target: vPosition
-            weight: 1 << (orientation == Qt.Horizontal ? 1 + views.length - idx : idx)
-        }
-        Edit {
-            id: __ePosition
-            target: vPosition
-            strength: Strength.Medium
-            enabled: anyDragging
-            weight: mouse.drag.active ? 20 : 1
-            suggested: vPosition.value
-            Binding on suggested {
+        Variable {
+            id: __vPosition
+            Stay {
+                target: vPosition
+                weight: 1 << (orientation == Qt.Horizontal ? 1 + views.length - idx : idx)
+            }
+            Edit {
+                id: __ePosition
+                strength: Strength.Medium
+                weight: 40
                 when: mouse.drag.active
-                value: orientation == Qt.Horizontal ? dragger.x : dragger.y
+                suggested: orientation == Qt.Horizontal ? dragger.x : dragger.y
+            }
+            Edit {
+                id: memory
+                strength: Strength.Medium
+                weight: 1
+                Binding on suggested {
+                    when: !anyDragging
+                    value: __vPosition.value
+                }
             }
         }
     }

@@ -42,7 +42,7 @@ Item {
 
     Solver {
         id: __solver
-
+        debug: true
         Variable { id: vTotalSize }
         Edit {
             target: vTotalSize
@@ -89,6 +89,7 @@ Item {
 
             solver: root.solver
             idx: index
+            anyDragging: root.anyDragging
 
             animate: root.animate
             handleColor: root.handleColor
@@ -97,9 +98,6 @@ Item {
             readonly property var prevWrapper: __wrappers[index]
             readonly property var nextWrapper: __wrappers[index + 1]
 
-            onDraggingChanged: {
-                root.reconcile()
-            }
             onToggleCollapse: root.toggleCollapse(
                 orientation == Qt.Horizontal ? index : index + 1)
             onFullPrev: root.full(index)
@@ -115,17 +113,12 @@ Item {
     }
 
     function reconcile() {
-        solver.commit()
         solver.defer(function () {
-            __wrappers.forEach(function (w) {
-                var collapsed = MoreUtils.almost(w.vSize.value, w.minimumSize)
-                w.eSize.when = false
-                w.cCollapse.when = false
-                if (!collapsed)
-                    w.eSize.suggested = w.vSize.value
-            })
-            __handles.forEach(function (h) {
-                h.ePosition.suggested = h.vPosition.value
+            solver.defer(function () {
+                __wrappers.forEach(function (w) {
+                    w.eSize.when = false
+                    w.cCollapse.when = false
+                })
             })
         })
     }
@@ -153,6 +146,7 @@ Item {
         var w = __wrappers[index]
         if (w && MoreUtils.almost(w.vSize.value, w.minimumSize)) {
             w.eSize.when = true
+            w.cCollapse.when = false
             reconcile()
         }
     }
