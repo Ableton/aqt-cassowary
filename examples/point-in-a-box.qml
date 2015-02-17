@@ -13,26 +13,28 @@ ApplicationWindow {
     }
 
     Solver {
-        Variable { id: centerY }
-        Variable { id: circleX; }
-        Variable { id: circleY; }
-        Variable { id: marginX; initial: 100 }
-
-        Stay {
-            target: marginX
-            strength: Strength.Required
+        debug: true
+        Variable {
+            id: centerY
         }
-
-        Edit {
-            id: editCircleX
-            target: circleX
-            suggested: dragger.x + dragger.width/2
+        Variable {
+            id: circleX
+            Stay {}
+            Edit {
+                suggested: dragger.x + dragger.width/2
+            }
         }
-
-        Edit {
-            id: editCircleY
-            target: circleY
-            suggested: dragger.y + dragger.height/2
+        Variable {
+            id: circleY
+            Stay { }
+            Edit {
+                suggested: dragger.y + dragger.height/2
+            }
+        }
+        Variable {
+            id: marginX
+            initial: 100
+            Stay { strength: Strength.Required }
         }
 
         Constraint { expr: eq(times(2, centerY), root.height) }
