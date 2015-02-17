@@ -156,6 +156,8 @@ ApplicationWindow {
                     id: mouse
                     anchors.fill: parent
                     drag {
+                        threshold: 0
+                        smoothed: false
                         target: dragger
                     }
                 }

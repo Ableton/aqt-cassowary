@@ -88,6 +88,8 @@ ApplicationWindow {
             anchors.fill: parent
             drag {
                 target: dragger
+                threshold: 0
+                smoothed: false
                 axis: Drag.XAndYAxis
             }
         }

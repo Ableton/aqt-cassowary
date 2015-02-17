@@ -99,7 +99,8 @@ Item {
         height: orientation == Qt.Vertical ? root.height + 12 : root.height
         drag {
             target: dragger
-            threshold: 1
+            threshold: 0
+            smoothed: false
             axis: orientation == Qt.Horizontal ? Drag.XAxis : Drag.YAxis
         }
 
