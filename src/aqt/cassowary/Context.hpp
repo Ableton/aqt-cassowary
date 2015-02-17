@@ -79,11 +79,17 @@ private:
     return s.str();
   }
 
+  template <typename T>
+  std::string format(std::ostringstream&& s, T&& x)
+  {
+    s << x;
+    return format(std::move(s));
+  }
+
   template <typename T, typename ...Ts>
   std::string format(std::ostringstream&& s, T&& x, Ts&&... xs)
   {
-    s << x;
-    if (sizeof...(xs) > 0) s << " ";
+    s << x << " ";
     return format(std::move(s), std::forward<Ts>(xs)...);
   }
 
