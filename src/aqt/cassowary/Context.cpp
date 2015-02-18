@@ -162,10 +162,13 @@ bool commitSuggestions(
         ctx.solver().add_edit_var(e.first);
       }));
 
-    rheaGuard([&] {
-      ctx.log("  Reseting stay constants");
-      ctx.solver().reset_stay_constants();
-    })();
+    if (!edits.empty()) {
+      rheaGuard([&] {
+        ctx.log("  Reseting stays...");
+        ctx.solver().reset_stay_constants();
+        ctx.requestSolve();
+      })();
+    }
 
     std::for_each(
       suggestions.begin(), suggestions.end(),
@@ -200,6 +203,7 @@ bool commitSuggestions(
         ctx.log("  Remove edit var:", e.first);
         ctx.solver().remove_edit_var(e.first);
       }));
+
     return true;
   }
 

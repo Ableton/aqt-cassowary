@@ -1,4 +1,4 @@
-// Copyright (c) 2014, 2015 Ableton AG, Berlin
+// Copyright (c) 2015 Ableton AG, Berlin
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
@@ -18,35 +18,11 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#pragma once
+import QtQuick 2.3
+import Aqt.Cassowary 1.0
 
-#include <aqt/cassowary/Variable.hpp>
-#include <aqt/cassowary/ConstraintBase.hpp>
-
-namespace aqt {
-namespace cassowary {
-
-class Targeted : public ConstraintBase
-{
-  Q_OBJECT
-
-public:
-  Targeted(QQuickItem* pParent = nullptr,
-           Strength::Types strength = Strength::Required,
-           double weight = 1.0);
-
-  Q_PROPERTY(aqt::cassowary::Variable* target
-             MEMBER mTarget NOTIFY targetChanged)
-  Q_SIGNAL void targetChanged(aqt::cassowary::Variable* target);
-
-  Q_PROPERTY(aqt::cassowary::Variable* actualTarget
-             READ actualTarget NOTIFY actualTargetChanged)
-  Variable* actualTarget();
-  Q_SIGNAL void actualTargetChanged(aqt::cassowary::Variable* target);
-
-private:
-  QPointer<aqt::cassowary::Variable> mTarget;
-};
-
-} // namespace cassowary
-} // namespace aqt
+Edit {
+    id: edit
+    suggested: actualTarget.value
+    strength: Strength.Weak
+}

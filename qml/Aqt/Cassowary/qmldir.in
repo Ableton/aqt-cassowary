@@ -1,3 +1,4 @@
 module Aqt.Cassowary
 
+Stay 1.0 Stay.qml
 plugin AqtCassowaryPlugin @PATH_TO_PLUGIN@
