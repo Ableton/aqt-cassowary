@@ -64,7 +64,7 @@ double Variable::value() const
 void Variable::setValue(double value)
 {
   auto ctx = context();
-  if (ctx) ctx->suggestOnce(mVariable, value);
+  if (ctx) ctx->edit(mVariable, value);
 }
 
 const rhea::variable& Variable::variableImpl() const

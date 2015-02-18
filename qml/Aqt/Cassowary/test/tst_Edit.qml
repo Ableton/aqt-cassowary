@@ -147,7 +147,6 @@ TestScene {
         }
 
         function test_variablesCanBeEditedDirectlyWhileAnEditIsGoingOn() {
-            v4.value = 42
             e4.suggested = 21
             e4.when = true
             s3.commit()
@@ -166,6 +165,31 @@ TestScene {
             e4.suggested = 100
             s3.commit()
             compare(v4.value, 5)
+        }
+    }
+
+    Solver {
+        id: s5
+        Variable {
+            id: v5
+            Edit {
+                id: e5
+            }
+            Edit {
+                id: e6
+                strength: Strength.Medium
+            }
+        }
+
+        function test_editsAreIndependent() {
+            e5.suggested = 21
+            e6.suggested = 42
+            s5.commit()
+            compare(v5.value, 21)
+
+            e5.when = false
+            s5.commit()
+            compare(v5.value, 42)
         }
     }
 }

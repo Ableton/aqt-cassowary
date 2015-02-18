@@ -60,7 +60,7 @@ void Edit::suggest(double value)
     auto ctx = context();
     auto target = actualTarget();
     if (ctx && target) {
-      ctx->suggest(target->variableImpl(), value);
+      ctx->suggest(get(), value);
     }
   }
 }

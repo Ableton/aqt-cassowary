@@ -47,6 +47,7 @@ public:
 
 protected:
   bool when() const { return mActualWhen; }
+  const rhea::constraint& get() const { return mConstraint; }
   void set(std::shared_ptr<rhea::abstract_constraint> constraint);
   void addIn(Context& ctx) override;
   void removeIn(Context& ctx) override;
