@@ -26,6 +26,32 @@
 namespace aqt {
 namespace cassowary {
 
+/*!
+ *  An edit constraint allows to suggest values for a variable.  It
+ *  can be used to represent the user's wish.
+ *
+ *  @par Example
+ *  @code
+ *  Solver {
+ *      Variable {
+ *          id: vX
+ *          Stay {}
+ *          Edit {
+ *              suggested: mouseArea.mouseX
+ *              when: mouseArea.pressed
+ *          }
+ *      }
+ *  }
+ *  MouseArea { id: mouseArea }
+ *  @endcode
+ *
+ *  @par Import in QML
+ *  `import Aqt.Cassowary 1.0`
+ *
+ *  @since 1.0
+ *  @see Stay
+ *  @see Targeted
+ */
 class Edit : public Targeted
 {
   Q_OBJECT
@@ -33,10 +59,18 @@ class Edit : public Targeted
 public:
   Edit(QQuickItem* pParent=0);
 
+  /*!
+   *  Number containing the current suggestion for what the user wants
+   *  the value of the target variable to be.
+   */
   Q_PROPERTY(double suggested
              MEMBER mSuggested NOTIFY suggestedChanged)
   Q_SIGNAL void suggestedChanged(double suggested);
 
+  /*!
+   *  Instantanously suggest a new value for the target variable.
+   *  This does not change the `suggested` property.
+   */
   Q_INVOKABLE void suggest(double value);
 
 protected:

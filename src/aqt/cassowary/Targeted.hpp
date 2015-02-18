@@ -26,6 +26,17 @@
 namespace aqt {
 namespace cassowary {
 
+/*!
+ *  Base class of special constraints that affect a special *target*
+ *  variable.  The effective target will be choosen using the
+ *  following rules:
+ *
+ *    - If the `target` property is set, this variable will be used.
+ *    - Otherwise, if the parent object is a variable, this will be used.
+ *
+ *  @see Edit
+ *  @see Stay
+ */
 class Targeted : public ConstraintBase
 {
   Q_OBJECT
@@ -35,10 +46,18 @@ public:
            Strength::Types strength = Strength::Required,
            double weight = 1.0);
 
+  /*!
+   *  Explicitly set target variable.
+   *  @see Targeted
+   */
   Q_PROPERTY(aqt::cassowary::Variable* target
              MEMBER mTarget NOTIFY targetChanged)
   Q_SIGNAL void targetChanged(aqt::cassowary::Variable* target);
 
+  /*!
+   *  Returns the effective target.
+   *  @see Targeted
+   */
   Q_PROPERTY(aqt::cassowary::Variable* actualTarget
              READ actualTarget NOTIFY actualTargetChanged)
   Variable* actualTarget();

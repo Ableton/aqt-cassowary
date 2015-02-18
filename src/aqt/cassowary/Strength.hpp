@@ -32,6 +32,24 @@ ABL_RESTORE_WARNINGS
 namespace aqt {
 namespace cassowary {
 
+/*!
+ *  Enum categorising the priority of constraints.  Constraints with
+ *  higher strengths have higher priority, and thus the system will
+ *  try harder to satisfy them iff not all constraints can be
+ *  satisfied at the same time -- i.e. when the system is
+ *  overconstrained.
+ *
+ *  @note The `Required` strength is special.  The solver will log
+ *  errors when required constraints can not be satisfied.
+ *
+ *  @see ConstraintBase
+ *  @see Constraint
+ *
+ *  @par Import in QML
+ *  `import Aqt.Cassowary 1.0`
+ *
+ *  @since 1.0
+ */
 class Strength : public QObject
 {
   Q_OBJECT

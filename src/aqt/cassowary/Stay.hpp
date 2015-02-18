@@ -26,6 +26,21 @@
 namespace aqt {
 namespace cassowary {
 
+/*!
+ *  An stay constraint indicates that the solver should try to
+ *  preserve a variable's value.  It is useful in an under-constrained
+ *  system to prevent a variable from jumping between different valid
+ *  solutions between resolutions.  It is most often used in
+ *  combination with `Edit` constraints, to prevent the variable from
+ *  jumping when an edit gesture is finished.
+ *
+ *  @see Edit for an example
+ *
+ *  @par Import in QML
+ *  `import Aqt.Cassowary 1.0`
+ *
+ *  @since 1.0
+ */
 class Stay : public Targeted
 {
   Q_OBJECT
