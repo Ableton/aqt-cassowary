@@ -12,7 +12,6 @@ Solver {
     Variable {
         id: vX
         Stay {}
-        Edit { strength: Strength.Weak; suggested: vX.value }
         Edit {
             when: mouse.drag.active
             suggested: dragger.x
@@ -21,7 +20,6 @@ Solver {
     Variable {
         id: vY
         Stay {}
-        Edit { strength: Strength.Weak; suggested: vY.value }
         Edit {
             when: mouse.drag.active
             suggested: dragger.y

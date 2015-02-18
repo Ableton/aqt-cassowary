@@ -21,6 +21,7 @@ ApplicationWindow {
             id: circleX
             Stay {}
             Edit {
+                when: mouse.drag.active
                 suggested: dragger.x + dragger.width/2
             }
         }
@@ -28,6 +29,7 @@ ApplicationWindow {
             id: circleY
             Stay { }
             Edit {
+                when: mouse.drag.active
                 suggested: dragger.y + dragger.height/2
             }
         }

@@ -88,11 +88,6 @@ ApplicationWindow {
                         when: !root.push || mouse.drag.active
                         suggested: dragger.x
                     }
-                    Edit {
-                        strength:  !root.push || mouse.drag.active
-                            ? Strength.Weak : Strength.Medium
-                        suggested: vX.value
-                    }
                 }
                 Variable {
                     id: vY
@@ -105,11 +100,6 @@ ApplicationWindow {
                         id: eY
                         when: !root.push || mouse.drag.active
                         suggested: dragger.y
-                    }
-                    Edit {
-                        strength: !root.push || mouse.drag.active
-                            ? Strength.Weak : Strength.Medium
-                        suggested: vY.value
                     }
                 }
 
