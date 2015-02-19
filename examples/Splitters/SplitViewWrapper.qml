@@ -43,11 +43,17 @@ Item {
     Solver {
         extend: root.solver
         Variable { id: __vPosition }
-        Variable { id: __vSize }
-        Edit {
-            id: __eSize
-            target: vSize
-            when: false
+        Variable {
+            id: __vSize
+            Edit {
+                id: __eSize
+                strength: Strength.Strong
+                when: false
+                Binding on suggested {
+                    when: __vSize.value > minimumSize
+                    value: __vSize.value
+                }
+            }
         }
         Constraint { expr: geq(vSize, minimumSize) }
         Constraint { expr: leq(vSize, maximumSize); when: maximumSize < Infinity }

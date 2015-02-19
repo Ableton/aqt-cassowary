@@ -26,6 +26,15 @@
 namespace aqt {
 namespace cassowary {
 
+/*!
+ *  Common abstract base of all constraint types, providing common
+ *  properties and behavior.
+ *
+ *  @see Constraint
+ *  @see Edit
+ *  @see Stay
+ *  @see Contextual
+ */
 class ConstraintBase : public Contextual
 {
   Q_OBJECT
@@ -35,18 +44,32 @@ public:
                  Strength::Types strength = Strength::Required,
                  double weight = 1.0);
 
+  /*!
+   *  Sets the strength of a constraint.
+   *  @see Strength
+   */
   Q_PROPERTY(aqt::cassowary::Strength::Types
              strength MEMBER mStrength NOTIFY strengthChanged)
   Q_SIGNAL void strengthChanged(aqt::cassowary::Strength::Types strength);
 
+  /*!
+   *  Sets the weight of a constraint.  The weight disambiguates the
+   *  priority of constraints with the same strenght.  Constraints
+   *  with higher weight have higher priority.
+   */
   Q_PROPERTY(double weight MEMBER mWeight NOTIFY weightChanged)
   Q_SIGNAL void weightChanged(double weight);
 
+  /*!
+   *  The constraint is enabled when this property holds a `true`
+   *  value, otherwise it has no effect.
+   */
   Q_PROPERTY(bool when MEMBER mWhen NOTIFY whenChanged)
   Q_SIGNAL void whenChanged(bool when);
 
 protected:
   bool when() const { return mActualWhen; }
+  const rhea::constraint& get() const { return mConstraint; }
   void set(std::shared_ptr<rhea::abstract_constraint> constraint);
   void addIn(Context& ctx) override;
   void removeIn(Context& ctx) override;

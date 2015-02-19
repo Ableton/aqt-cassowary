@@ -26,6 +26,30 @@
 namespace aqt {
 namespace cassowary {
 
+/*!
+ *  Provides a context to register and resolve constraints.
+ *
+ *  It may as well simply extend another context, following the normal
+ *  rules of `Contextuals`.
+ *
+ *  Note that the solver does not resolve the equations until the next
+ *  redraw of the screen.  This prevents intermediate values to confuse
+ *  the solver during binding propagations, as well as improves
+ *  performance as only the minimal set of updates to visualize new
+ *  layouts is performed.  If needed (e.g. in tests) one may manually
+ *  update the system with the `commit()` method.
+ *
+ *  @par Example
+ *  @code
+ *  Solver {}
+ *  @endcode
+ *
+ *  @par Import in QML
+ *  `import Aqt.Cassowary 1.0`
+ *
+ *  @since 1.0
+ *  @see Contextual
+ */
 class Solver : public Contextual
 {
   Q_OBJECT
@@ -34,6 +58,17 @@ public:
   Solver(QQuickItem* pParent = nullptr);
   ~Solver() override;
 
+  /*!
+   *  Toggles debug traces for the context provided by this solver.
+   *  This has no effect if the solver is simply extending another
+   *  context. Also:
+   *
+   *    - The debug traces may are still affected by the general Qt
+   *      logging filters.
+   *
+   *    - Debug traces will never be shown if NDEBUG is defined at
+   *      compilation time.
+   */
   Q_PROPERTY(bool debug MEMBER mDebug NOTIFY debugChanged)
   Q_SIGNAL void debugChanged(bool debug);
 

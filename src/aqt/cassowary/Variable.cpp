@@ -28,7 +28,13 @@ Variable::Variable(QQuickItem* pParent)
   , mVariable([this] (double value) {
     if (!rhea::near_zero(value - mLastValue)) {
       mLastValue = value;
-      Q_EMIT valueChanged(value);
+      auto ctx = context();
+      auto notification = [this, value] { Q_EMIT valueChanged(value); };
+      if (ctx) {
+        ctx->notify(mVariable, guarded(notification));
+      } else {
+        notification();
+      }
     }
   })
 {
@@ -58,7 +64,7 @@ double Variable::value() const
 void Variable::setValue(double value)
 {
   auto ctx = context();
-  if (ctx) ctx->suggestOnce(mVariable, value);
+  if (ctx) ctx->edit(mVariable, value);
 }
 
 const rhea::variable& Variable::variableImpl() const

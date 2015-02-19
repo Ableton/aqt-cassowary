@@ -32,6 +32,45 @@ ABL_RESTORE_WARNINGS
 namespace aqt {
 namespace cassowary {
 
+/*!
+ *  Base class for items that need to be registered in a solver.
+ *
+ *  Most *Aqt.Cassowary* entities need to be registered in a solver to
+ *  be effective.  This solver is sometimes referred to as the
+ *  *context*.  The context in which an item will be determined:
+ *
+ *    - If the `extend` property is set, it will use the context of
+ *      the entity it refers to.
+ *
+ *    - Otherwise, if the parent is also a contextual, it will use its
+ *      context.
+ *
+ *  The second rule allows to conveniently define constraints directly
+ *  in a context, and the previous allows for composition.
+ *
+ *  @par Example
+ *  @code
+ *  Solver {
+ *      id: solver
+ *      Variable { id: something }
+ *      Constraint { expr: eq(something, 42) }
+ *      Repeater {
+ *          model: 4
+ *          Solver {
+ *              extend: solver
+ *              Variable { id: other }
+ *              Constraint { expr: geq(other, something) }
+ *          }
+ *      }
+ *  }
+ *  @endcode
+ *
+ *  @par Import in QML
+ *  `import Aqt.Cassowary 1.0`
+ *
+ *  @since 1.0
+ *  @see Contextual
+ */
 class Contextual : public QQuickItem
 {
   Q_OBJECT
@@ -43,16 +82,42 @@ public:
   std::shared_ptr<const Context> context() const;
   Q_SIGNAL void contextChanged();
 
+  /*!
+   *  If non-null, this contextual will use the same context as
+   *  used by this contextual.
+   */
   Q_PROPERTY(aqt::cassowary::Contextual* extend
              MEMBER mExtend NOTIFY extendChanged)
   Q_SIGNAL void extendChanged(aqt::cassowary::Contextual* extend);
 
+  /*!
+   *  Applies all the changes associated to the context used by this
+   *  contextual.
+   *
+   *  @see Solver for more details on how and when are the changes
+   *       usually applied.
+   */
   Q_INVOKABLE void commit();
+
+  /*!
+   *  Executes the callback `cb` at the end of the next phase of
+   *  updates in the solver, but before the changes are propagated to
+   *  the bindings.
+   */
   Q_INVOKABLE void defer(QJSValue cb);
   void defer(Context::Callback cb);
+
   // Used to disambiguate some calls because VS03 is dumb
   void defer_(Context::Callback cb) { defer(std::move(cb)); }
 
+  /*!
+   *  Used to log a debug trace, that may be visible when the current
+   *  context's debug property is set.  Spaces will be printed between
+   *  the arguments.  Arguments should be compatible with
+   *  `std::ostream`.
+   *
+   *  @see Solver for more details on when debug output is visible.
+   */
   template <typename ...Args>
   void log(Args&&... args) {
     auto ctx = context();

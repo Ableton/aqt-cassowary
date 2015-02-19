@@ -1,4 +1,4 @@
-// Copyright (c) 2014, 2015 Ableton AG, Berlin
+// Copyright (c) 2015 Ableton AG, Berlin
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
@@ -18,53 +18,11 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#pragma once
+import QtQuick 2.3
+import Aqt.Cassowary 1.0
 
-#include <ableton/build_system/Warnings.hpp>
-
-ABL_DISABLE_WARNINGS
-#include <QtCore/QMetaType>
-#include <QtCore/QObject>
-#include <QtCore/QVariant>
-#include <rhea/strength.hpp>
-ABL_RESTORE_WARNINGS
-
-namespace aqt {
-namespace cassowary {
-
-/*!
- *  Enum categorising the priority of constraints.  Constraints with
- *  higher strengths have higher priority, and thus the system will
- *  try harder to satisfy them iff not all constraints can be
- *  satisfied at the same time -- i.e. when the system is
- *  overconstrained.
- *
- *  @note The `Required` strength is special.  The solver will log
- *  errors when required constraints can not be satisfied.
- *
- *  @see ConstraintBase
- *  @see Constraint
- *
- *  @par Import in QML
- *  `import Aqt.Cassowary 1.0`
- *
- *  @since 1.0
- */
-class Strength : public QObject
-{
-  Q_OBJECT
-  Q_ENUMS(Types)
-
-public:
-  enum Types {
-    Required,
-    Strong,
-    Medium,
-    Weak
-  };
-
-  static rhea::strength impl(Types t);
-};
-
-} // namespace cassowary
-} // namespace aqt
+Edit {
+    id: edit
+    suggested: actualTarget.value
+    strength: Strength.Weak
+}

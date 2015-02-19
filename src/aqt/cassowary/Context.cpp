@@ -72,21 +72,26 @@ void Context::remove(rhea::constraint c)
   }
 }
 
-void Context::suggest(rhea::variable v, double x)
+void Context::suggest(rhea::constraint e, double x)
 {
   if (!std::isnan(x)) {
-    mSuggestions[v] = x;
+    mSuggestions[e] = x;
     schedule();
   }
 }
 
-void Context::suggestOnce(rhea::variable v, double x)
+void Context::edit(rhea::variable v, double x)
 {
   if (!std::isnan(x)) {
-    mEdits.insert(v);
-    mSuggestions[v] = x;
+    mEdits[v] = x;
     schedule();
   }
+}
+
+void Context::notify(rhea::variable v, Callback cb)
+{
+  mNotifications[v] = cb;
+  schedule();
 }
 
 void Context::requestSolve()
@@ -149,27 +154,41 @@ bool commitSuggestions(
   const SuggestionsT& suggestions,
   const EditsT& edits)
 {
-  if (!suggestions.empty()) {
+  if (!suggestions.empty() || !edits.empty()) {
     std::for_each(
       edits.begin(), edits.end(),
-      rheaGuard([&] (const rhea::variable& v) {
-        ctx.log("  Add edit var:", v);
-        ctx.solver().add_edit_var(v);
+      rheaGuard([&] (const std::pair<rhea::variable, double>& e) {
+        ctx.log("  Add edit var:", e.first);
+        ctx.solver().add_edit_var(e.first);
       }));
 
-    rheaGuard([&] {
-      ctx.log("  Reseting stay constants");
-      ctx.solver().reset_stay_constants();
-    })();
+    if (!edits.empty()) {
+      rheaGuard([&] {
+        ctx.log("  Reseting stays...");
+        ctx.solver().reset_stay_constants();
+        ctx.requestSolve();
+      })();
+    }
 
     std::for_each(
       suggestions.begin(), suggestions.end(),
-      rheaGuard([&] (const std::pair<rhea::variable, double>& s) {
+      rheaGuard([&] (const std::pair<rhea::constraint, double>& s) {
         ctx.log("  Suggesting:", s.first, "=", s.second);
         try {
           ctx.solver().suggest_value(s.first, s.second);
         } catch (const rhea::edit_misuse&) {
           ctx.log("  Suggestion had no effect");
+        }
+      }));
+
+    std::for_each(
+      edits.begin(), edits.end(),
+      rheaGuard([&] (const std::pair<rhea::variable, double>& s) {
+        ctx.log("  Editing:", s.first, "=", s.second);
+        try {
+          ctx.solver().suggest_value(s.first, s.second);
+        } catch (const rhea::edit_misuse&) {
+          ctx.log("  Edit had no effect");
         }
       }));
 
@@ -180,10 +199,11 @@ bool commitSuggestions(
 
     std::for_each(
       edits.begin(), edits.end(),
-      rheaGuard([&] (const rhea::variable& v) {
-        ctx.log("  Remove edit var:", v);
-        ctx.solver().remove_edit_var(v);
+      rheaGuard([&] (const std::pair<rhea::variable, double>& e) {
+        ctx.log("  Remove edit var:", e.first);
+        ctx.solver().remove_edit_var(e.first);
       }));
+
     return true;
   }
 
@@ -195,6 +215,13 @@ bool commitDeferred(Context&, const DeferredT& deferred)
 {
   for (auto& d : deferred) d();
   return !deferred.empty();
+}
+
+template <typename NotificationT>
+bool commitNotifications(Context&, const NotificationT& notifications)
+{
+  for (auto& n : notifications) n.second();
+  return !notifications.empty();
 }
 
 } // anonymous namespace
@@ -216,6 +243,8 @@ void Context::commit()
         *this, swapD(mSuggestions), swapD(mEdits));
       notDone |= commitDeferred(
         *this, swapD(mDeferred));
+      notDone |= commitNotifications(
+        *this, swapD(mNotifications));
     }
     log("...commit finished");
   }
