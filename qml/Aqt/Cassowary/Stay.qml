@@ -23,6 +23,6 @@ import Aqt.Cassowary 1.0
 
 Edit {
     id: edit
-    suggested: actualTarget.value
+    suggested: actualTarget ? actualTarget.value : NaN
     strength: Strength.Weak
 }
