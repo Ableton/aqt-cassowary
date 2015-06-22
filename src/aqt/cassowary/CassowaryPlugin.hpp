@@ -29,6 +29,40 @@ ABL_RESTORE_WARNINGS
 namespace aqt {
 namespace cassowary {
 
+/*!
+ *  @mainpage Aqt.Cassowary reference documentation
+ *
+ *  @section intro Introduction
+ *
+ *  Aqt.Cassowary (pronounced like *Acute Cassowary*) is a Qt plugin
+ *  that allows you to run a incremental linear constraint solver in
+ *  QML applications, providing a declarative interface that fits
+ *  naturally in the QML programming model.
+ *
+ *  It is a wrapper around [Rhea](https://github.com/Nocte-/rhea),
+ *  which is modern C++ implementation based on the original
+ *  [Cassowary linear constraint solver](
+ *  http://constraints.cs.washington.edu/cassowary/).
+ *
+ *  @section what Incremental linear constraint what the heck...?
+ *
+ *  A linear constraint solver allows you to specify the relationship
+ *  between variables (constraints) without necessarily giving them
+ *  specific values.  The system can then automatically find values
+ *  for these variables that satisfy all the specified
+ *  relationships. It is incremental, because the constraints can
+ *  change and the system reuses previous solutions to provide stable
+ *  results fast.
+ *
+ *  Cassowary is most useful for writing layout code for responsive
+ *  applications with very dynamic content.  It is the tool you need
+ *  when `anchors` or `QtQuick.Layouts` are too rigid for you.  Check
+ *  the examples in `examples` for more details.
+ *
+ *  @section Reference
+ *  @ref qml
+ *  @defgroup qml Qml types
+ */
 class CassowaryPlugin : public QQmlExtensionPlugin
 {
   Q_OBJECT

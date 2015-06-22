@@ -27,6 +27,7 @@ namespace aqt {
 namespace cassowary {
 
 /*!
+ *  @ingroup qml
  *  Provides a context to register and resolve constraints.
  *
  *  It may as well simply extend another context, following the normal

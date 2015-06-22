@@ -26,6 +26,7 @@ namespace aqt {
 namespace cassowary {
 
 /*!
+ *  @ingroup qml
  *  A linear constraint.
  *
  *  A linear constraint allows us to set equations or inequalities

@@ -27,6 +27,7 @@ namespace aqt {
 namespace cassowary {
 
 /*!
+ *  @ingroup qml
  *  An stay constraint indicates that the solver should try to
  *  preserve a variable's value.  It is useful in an under-constrained
  *  system to prevent a variable from jumping between different valid

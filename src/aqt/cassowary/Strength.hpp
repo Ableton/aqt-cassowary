@@ -33,6 +33,7 @@ namespace aqt {
 namespace cassowary {
 
 /*!
+ *  @ingroup qml
  *  Enum categorising the priority of constraints.  Constraints with
  *  higher strengths have higher priority, and thus the system will
  *  try harder to satisfy them iff not all constraints can be

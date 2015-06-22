@@ -31,6 +31,7 @@ namespace aqt {
 namespace cassowary {
 
 /*!
+ *  @ingroup qml
  *  Represents a variable whose value will be determined by a
  *  constraint solver.
  *

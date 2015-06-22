@@ -27,6 +27,7 @@ namespace aqt {
 namespace cassowary {
 
 /*!
+ *  @ingroup qml
  *  An edit constraint allows to suggest values for a variable.  It
  *  can be used to represent the user's wish.
  *
