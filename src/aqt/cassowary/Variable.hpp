@@ -21,6 +21,7 @@
 #pragma once
 
 #include <aqt/cassowary/Contextual.hpp>
+#include <aqt/cassowary/Strength.hpp>
 #include <ableton/build_system/Warnings.hpp>
 
 ABL_DISABLE_WARNINGS
@@ -75,6 +76,10 @@ public:
   double value() const;
   void setValue(double);
   Q_SIGNAL void valueChanged(double value);
+
+  Q_INVOKABLE void suggest(double value,
+                           int /* Strength::Types */ strength,
+                           double weight);
 
   /*!
    *  Sets the initial value of this variable.  If `NaN` is set, the

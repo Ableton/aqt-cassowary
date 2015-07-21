@@ -80,10 +80,12 @@ void Context::suggest(rhea::constraint e, double x)
   }
 }
 
-void Context::edit(rhea::variable v, double x)
+void Context::edit(rhea::variable v, double x,
+                   rhea::strength strength,
+                   double weight)
 {
   if (!std::isnan(x)) {
-    mEdits[v] = x;
+    mEdits[v] = EditData { x, std::move(strength), weight };
     schedule();
   }
 }
@@ -152,14 +154,23 @@ template <typename SuggestionsT, typename EditsT>
 bool commitSuggestions(
   Context& ctx,
   const SuggestionsT& suggestions,
-  const EditsT& edits)
+  const EditsT& edits_)
 {
+  using edit_t = std::pair<typename EditsT::key_type,
+                           typename EditsT::mapped_type>;
+  using suggestion_t = typename SuggestionsT::value_type;
+
+  auto edits = std::vector<edit_t>{edits_.begin(), edits_.end()};
+  std::sort(edits.begin(), edits.end(), [] (const edit_t& x, const edit_t& y) {
+    return x.second.order < y.second.order;
+  });
+
   if (!suggestions.empty() || !edits.empty()) {
     std::for_each(
       edits.begin(), edits.end(),
-      rheaGuard([&] (const std::pair<rhea::variable, double>& e) {
+      rheaGuard([&] (const edit_t& e) {
         ctx.log("  Add edit var:", e.first);
-        ctx.solver().add_edit_var(e.first);
+        ctx.solver().add_edit_var(e.first, e.second.strength, e.second.weight);
       }));
 
     if (!edits.empty()) {
@@ -172,7 +183,7 @@ bool commitSuggestions(
 
     std::for_each(
       suggestions.begin(), suggestions.end(),
-      rheaGuard([&] (const std::pair<rhea::constraint, double>& s) {
+      rheaGuard([&] (const suggestion_t& s) {
         ctx.log("  Suggesting:", s.first, "=", s.second);
         try {
           ctx.solver().suggest_value(s.first, s.second);
@@ -183,10 +194,10 @@ bool commitSuggestions(
 
     std::for_each(
       edits.begin(), edits.end(),
-      rheaGuard([&] (const std::pair<rhea::variable, double>& s) {
-        ctx.log("  Editing:", s.first, "=", s.second);
+      rheaGuard([&] (const edit_t& s) {
+        ctx.log("  Editing:", s.first, "=", s.second.value);
         try {
-          ctx.solver().suggest_value(s.first, s.second);
+          ctx.solver().suggest_value(s.first, s.second.value);
         } catch (const rhea::edit_misuse&) {
           ctx.log("  Edit had no effect");
         }
@@ -199,7 +210,7 @@ bool commitSuggestions(
 
     std::for_each(
       edits.begin(), edits.end(),
-      rheaGuard([&] (const std::pair<rhea::variable, double>& e) {
+      rheaGuard([&] (const edit_t& e) {
         ctx.log("  Remove edit var:", e.first);
         ctx.solver().remove_edit_var(e.first);
       }));

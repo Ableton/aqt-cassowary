@@ -59,7 +59,9 @@ public:
   void add(rhea::constraint c);
   void remove(rhea::constraint c);
   void suggest(rhea::constraint e, double x);
-  void edit(rhea::variable v, double x);
+  void edit(rhea::variable v, double x,
+            rhea::strength = rhea::strength::strong(),
+            double weight = 1.0);
   void notify(rhea::variable v, Callback cb);
   void defer(Callback cb);
   void commit();
@@ -73,6 +75,29 @@ public:
         << format(std::ostringstream{}, std::forward<Args>(args)...).c_str();
     }
   }
+
+  struct EditData
+  {
+    double value = 0.0;
+    rhea::strength strength = rhea::strength::strong();
+    double weight = 1.0;
+    std::size_t order = 0;
+
+    EditData() = default;
+    EditData(double value_, rhea::strength strength_, double weight_)
+      : value(value_), strength(strength_), weight(weight_)
+    {
+      static std::size_t next_order{};
+      order = next_order++;
+    }
+
+    friend bool operator<(const EditData& x, const EditData& y)
+    {
+      return
+        std::tie(x.value, x.strength, x.weight) <
+        std::tie(y.value, y.strength, y.weight);
+    }
+  };
 
 private:
   std::string format(std::ostringstream&& s)
@@ -102,7 +127,7 @@ private:
   std::unordered_set<rhea::constraint> mAdditions;
   std::unordered_set<rhea::constraint> mRemovals;
   std::unordered_map<rhea::constraint, double> mSuggestions;
-  std::unordered_map<rhea::variable, double> mEdits;
+  std::unordered_map<rhea::variable, EditData> mEdits;
   std::vector<Callback> mDeferred;
   std::unordered_map<rhea::variable, Callback> mNotifications;
   rhea::simplex_solver mSolver;

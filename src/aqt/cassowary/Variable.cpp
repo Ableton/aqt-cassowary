@@ -67,6 +67,15 @@ void Variable::setValue(double value)
   if (ctx) ctx->edit(mVariable, value);
 }
 
+void Variable::suggest(double value,
+                       int strength,
+                       double weight)
+{
+  auto ctx = context();
+  if (ctx) ctx->edit(mVariable, value, Strength::impl(
+                       Strength::Types(strength)), weight);
+}
+
 const rhea::variable& Variable::variableImpl() const
 {
   return mVariable;
