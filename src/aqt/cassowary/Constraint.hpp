@@ -127,7 +127,7 @@ public:
    *  `undefined`.  Its arguments may be *arithmetic expressions*,
    *  `Variable` objects or numbers.
    */
-  Q_INVOKABLE QVariant eq(QVariant a, QVariant b);
+  Q_INVOKABLE QVariant eq(QVariant, QVariant);
 
   /*!
    *  Returns a *comparison expression* stating that its first
@@ -135,7 +135,7 @@ public:
    *  its arguments is `undefined`.  Its arguments may be *arithmetic
    *  expressions*, `Variable` objects or numbers.
    */
-  Q_INVOKABLE QVariant geq(QVariant a, QVariant b);
+  Q_INVOKABLE QVariant geq(QVariant, QVariant);
 
   /*!
    *  Returns a *comparison expression* stating that its first
@@ -143,7 +143,7 @@ public:
    *  of its arguments is `undefined`.  Its arguments may be
    *  *arithmetic expressions*, `Variable` objects or numbers.
    */
-  Q_INVOKABLE QVariant leq(QVariant a, QVariant b);
+  Q_INVOKABLE QVariant leq(QVariant, QVariant);
 
 private:
   QVariant mExpr;
