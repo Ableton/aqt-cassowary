@@ -245,18 +245,20 @@ void Context::commit()
     mCommiting = true;
 
     log("Commiting... ");
-    bool notDone = true;
-    while (notDone) {
-      notDone = false;
-      notDone |= commitConstraints(
-        *this, swapD(mRemovals), swapD(mAdditions), swapD(mNeedsSolve));
-      notDone |= commitSuggestions(
-        *this, swapD(mSuggestions), swapD(mEdits));
-      notDone |= commitDeferred(
-        *this, swapD(mDeferred));
-      notDone |= commitNotifications(
-        *this, swapD(mNotifications));
-    }
+    bool notDone = false;
+    do {
+      do {
+        notDone = false;
+        notDone |= commitConstraints(
+          *this, swapD(mRemovals), swapD(mAdditions), swapD(mNeedsSolve));
+        notDone |= commitSuggestions(
+          *this, swapD(mSuggestions), swapD(mEdits));
+        notDone |= commitDeferred(
+          *this, swapD(mDeferred));
+        notDone |= commitNotifications(
+          *this, swapD(mNotifications));
+      } while (notDone);
+    } while (notDone);
     log("...commit finished");
   }
 }

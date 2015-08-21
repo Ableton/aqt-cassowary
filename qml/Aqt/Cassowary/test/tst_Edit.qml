@@ -168,16 +168,18 @@ TestScene {
         }
     }
 
-    Solver {
-        id: s5
-        Variable {
-            id: v5
-            Edit {
-                id: e5
-            }
-            Edit {
-                id: e6
-                strength: Strength.Medium
+    TestCase {
+        Solver {
+            id: s5
+            Variable {
+                id: v5
+                Edit {
+                    id: e5
+                }
+                Edit {
+                    id: e6
+                    strength: Strength.Medium
+                }
             }
         }
 
@@ -190,6 +192,57 @@ TestScene {
             e5.when = false
             s5.commit()
             compare(v5.value, 42)
+        }
+    }
+
+    TestCase {
+        Solver {
+            id: s6
+            debug: true
+            Variable {
+                id: v6
+                Stay {
+                    strength: Strength.Medium;
+                }
+            }
+            Variable {
+                id: v7
+                Stay {}
+            }
+            Variable {
+                id: v8
+                Stay {}
+            }
+            Variable {
+                id: v9
+                Stay {}
+            }
+            Constraint {
+                expr: eq(100, plus(v6, v7, v8, v9))
+            }
+        }
+
+        function test_suggestWithStrength() {
+            v6.suggest(42, Strength.Strong, 1);
+            s6.commit()
+            compare(v6.value, 42);
+
+            v6.suggest(13, Strength.Weak, 1);
+            s6.commit()
+            compare(v6.value, 42);
+        }
+
+        function test_suggestRespectsWeight() {
+            s6.commit()
+            console.debug("YADA YADA YADA")
+            v9.suggest(30, Strength.Strong, 1000);
+            v8.suggest(30, Strength.Strong, 100);
+            v7.suggest(30, Strength.Strong, 10);
+            v6.suggest(30, Strength.Strong, 1);
+
+            s6.commit()
+            compare(v6.value, 10);
+            compare(v7.value, 30);
         }
     }
 }

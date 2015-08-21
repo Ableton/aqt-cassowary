@@ -77,6 +77,7 @@ TestScene {
     TestCase {
         Solver {
             id: s2
+            debug: true
             Variable {
                 id: v3
                 Stay { strength: Strength.Medium }

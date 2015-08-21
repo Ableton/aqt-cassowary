@@ -119,7 +119,7 @@ public:
    *  @see Solver for more details on when debug output is visible.
    */
   template <typename ...Args>
-  void log(Args&&... args) {
+  void log(Args&&... args) const {
     auto ctx = context();
     if (ctx) {
       ctx->log(std::forward<Args>(args)...);
