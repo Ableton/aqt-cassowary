@@ -168,16 +168,18 @@ TestScene {
         }
     }
 
-    Solver {
-        id: s5
-        Variable {
-            id: v5
-            Edit {
-                id: e5
-            }
-            Edit {
-                id: e6
-                strength: Strength.Medium
+    TestCase {
+        Solver {
+            id: s5
+            Variable {
+                id: v5
+                Edit {
+                    id: e5
+                }
+                Edit {
+                    id: e6
+                    strength: Strength.Medium
+                }
             }
         }
 
