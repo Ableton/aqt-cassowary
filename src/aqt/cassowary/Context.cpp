@@ -83,7 +83,7 @@ void Context::suggest(rhea::constraint e, double x)
 void Context::edit(rhea::variable v, double x)
 {
   if (!std::isnan(x)) {
-    mEdits[v] = x;
+    mEdits.emplace_back(std::move(v), x);
     schedule();
   }
 }
@@ -154,10 +154,13 @@ bool commitSuggestions(
   const SuggestionsT& suggestions,
   const EditsT& edits)
 {
+  using edit_t = typename EditsT::value_type;
+  using suggestion_t = typename SuggestionsT::value_type;
+
   if (!suggestions.empty() || !edits.empty()) {
     std::for_each(
       edits.begin(), edits.end(),
-      rheaGuard([&] (const std::pair<rhea::variable, double>& e) {
+      rheaGuard([&] (const edit_t& e) {
         ctx.log("  Add edit var:", e.first);
         ctx.solver().add_edit_var(e.first);
       }));
@@ -172,7 +175,7 @@ bool commitSuggestions(
 
     std::for_each(
       suggestions.begin(), suggestions.end(),
-      rheaGuard([&] (const std::pair<rhea::constraint, double>& s) {
+      rheaGuard([&] (const suggestion_t& s) {
         ctx.log("  Suggesting:", s.first, "=", s.second);
         try {
           ctx.solver().suggest_value(s.first, s.second);
@@ -183,7 +186,7 @@ bool commitSuggestions(
 
     std::for_each(
       edits.begin(), edits.end(),
-      rheaGuard([&] (const std::pair<rhea::variable, double>& s) {
+      rheaGuard([&] (const edit_t& s) {
         ctx.log("  Editing:", s.first, "=", s.second);
         try {
           ctx.solver().suggest_value(s.first, s.second);
@@ -199,7 +202,7 @@ bool commitSuggestions(
 
     std::for_each(
       edits.begin(), edits.end(),
-      rheaGuard([&] (const std::pair<rhea::variable, double>& e) {
+      rheaGuard([&] (const edit_t& e) {
         ctx.log("  Remove edit var:", e.first);
         ctx.solver().remove_edit_var(e.first);
       }));

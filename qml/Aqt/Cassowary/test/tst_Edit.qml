@@ -194,4 +194,61 @@ TestScene {
             compare(v5.value, 42)
         }
     }
+
+    TestCase {
+        Solver {
+            id: s6
+            Variable {
+                id: v6
+                Stay {}
+            }
+            Variable {
+                id: v7
+                Stay {}
+            }
+            Variable {
+                id: v8
+                Stay {}
+            }
+            Variable {
+                id: v9
+                Stay {}
+            }
+            Constraint {
+                expr: eq(100, plus(v6, v7, v8, v9))
+            }
+        }
+
+        function test_imperativeSuggestOrderingIsRespected() {
+            v9.value = 30;
+            v8.value = 30;
+            v7.value = 30;
+            v6.value = 30;
+            s6.commit()
+            compare(v9.value, 10);
+
+            v7.value = 30;
+            v9.value = 30;
+            v8.value = 30;
+            v6.value = 30;
+            s6.commit()
+            compare(v7.value, 10);
+
+            v6.value = 30;
+            v7.value = 30;
+            v9.value = 30;
+            v8.value = 30;
+            s6.commit()
+            compare(v6.value, 10);
+
+            v6.value = 30;
+            v7.value = 30;
+            v9.value = 30;
+            v6.value = 30;
+            v8.value = 30;
+            v7.value = 30;
+            s6.commit()
+            compare(v9.value, 10);
+        }
+    }
 }

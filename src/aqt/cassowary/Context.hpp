@@ -102,7 +102,7 @@ private:
   std::unordered_set<rhea::constraint> mAdditions;
   std::unordered_set<rhea::constraint> mRemovals;
   std::unordered_map<rhea::constraint, double> mSuggestions;
-  std::unordered_map<rhea::variable, double> mEdits;
+  std::vector<std::pair<rhea::variable, double> > mEdits;
   std::vector<Callback> mDeferred;
   std::unordered_map<rhea::variable, Callback> mNotifications;
   rhea::simplex_solver mSolver;
