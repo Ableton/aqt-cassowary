@@ -66,7 +66,7 @@ public:
   void requestSolve();
 
   template <typename ...Args>
-  void log(Args&& ...args)
+  void log(Args&& ...args) const
   {
     if (debug) {
       qCDebug(Logging,)
@@ -75,20 +75,20 @@ public:
   }
 
 private:
-  std::string format(std::ostringstream&& s)
+  std::string format(std::ostringstream&& s) const
   {
     return s.str();
   }
 
   template <typename T>
-  std::string format(std::ostringstream&& s, T&& x)
+  std::string format(std::ostringstream&& s, T&& x) const
   {
     s << x;
     return format(std::move(s));
   }
 
   template <typename T, typename ...Ts>
-  std::string format(std::ostringstream&& s, T&& x, Ts&&... xs)
+  std::string format(std::ostringstream&& s, T&& x, Ts&&... xs) const
   {
     s << x << " ";
     return format(std::move(s), std::forward<Ts>(xs)...);
@@ -102,7 +102,7 @@ private:
   std::unordered_set<rhea::constraint> mAdditions;
   std::unordered_set<rhea::constraint> mRemovals;
   std::unordered_map<rhea::constraint, double> mSuggestions;
-  std::unordered_map<rhea::variable, double> mEdits;
+  std::vector<std::pair<rhea::variable, double> > mEdits;
   std::vector<Callback> mDeferred;
   std::unordered_map<rhea::variable, Callback> mNotifications;
   rhea::simplex_solver mSolver;
