@@ -98,119 +98,119 @@ QVariant operation(OpFn op, QVariant a, More&&... s)
 
 } // anonymous namespace
 
-QVariant Constraint::plus(QVariant a, QVariant b)
+QVariant Constraint::plus(QVariant u, QVariant v)
 {
-  return operation(ableton::estd::plus<>{}, b, a);
+  return operation(ableton::estd::plus<>{}, v, u);
 }
 
-QVariant Constraint::plus(QVariant a, QVariant b, QVariant c)
+QVariant Constraint::plus(QVariant u, QVariant v, QVariant w)
 {
-  return operation(ableton::estd::plus<>{}, c, b, a);
+  return operation(ableton::estd::plus<>{}, w, v, u);
 }
 
-QVariant Constraint::plus(QVariant a, QVariant b, QVariant c, QVariant d)
+QVariant Constraint::plus(QVariant u, QVariant v, QVariant w, QVariant x)
 {
-  return operation(ableton::estd::plus<>{}, d, c, b, a);
+  return operation(ableton::estd::plus<>{}, x, w, v, u);
 }
 
-QVariant Constraint::plus(QVariant a, QVariant b, QVariant c, QVariant d, QVariant e)
+QVariant Constraint::plus(QVariant u, QVariant v, QVariant w, QVariant x, QVariant y)
 {
-  return operation(ableton::estd::plus<>{}, e, d, c, b, a);
+  return operation(ableton::estd::plus<>{}, y, x, w, v, u);
 }
 
-QVariant Constraint::plus(QVariant a, QVariant b, QVariant c, QVariant d, QVariant e,  QVariant f)
+QVariant Constraint::plus(QVariant u, QVariant v, QVariant w, QVariant x, QVariant y,  QVariant z)
 {
-  return operation(ableton::estd::plus<>{}, f, e, d, c, b, a);
+  return operation(ableton::estd::plus<>{}, z, y, x, w, v, u);
 }
 
-QVariant Constraint::minus(QVariant a, QVariant b)
+QVariant Constraint::minus(QVariant u, QVariant v)
 {
-  return operation(ableton::estd::minus<>{}, b, a);
+  return operation(ableton::estd::minus<>{}, v, u);
 }
 
-QVariant Constraint::minus(QVariant a, QVariant b, QVariant c)
+QVariant Constraint::minus(QVariant u, QVariant v, QVariant w)
 {
-  return operation(ableton::estd::minus<>{}, c, b, a);
+  return operation(ableton::estd::minus<>{}, w, v, u);
 }
 
-QVariant Constraint::minus(QVariant a, QVariant b, QVariant c, QVariant d)
+QVariant Constraint::minus(QVariant u, QVariant v, QVariant w, QVariant x)
 {
-  return operation(ableton::estd::minus<>{}, d, c, b, a);
+  return operation(ableton::estd::minus<>{}, x, w, v, u);
 }
 
-QVariant Constraint::minus(QVariant a, QVariant b, QVariant c, QVariant d, QVariant e)
+QVariant Constraint::minus(QVariant u, QVariant v, QVariant w, QVariant x, QVariant y)
 {
-  return operation(ableton::estd::minus<>{}, e, d, c, b, a);
+  return operation(ableton::estd::minus<>{}, y, x, w, v, u);
 }
 
-QVariant Constraint::minus(QVariant a, QVariant b, QVariant c, QVariant d, QVariant e,  QVariant f)
+QVariant Constraint::minus(QVariant u, QVariant v, QVariant w, QVariant x, QVariant y,  QVariant z)
 {
-  return operation(ableton::estd::minus<>{}, f, e, d, c, b, a);
+  return operation(ableton::estd::minus<>{}, z, y, x, w, v, u);
 }
 
-QVariant Constraint::times(QVariant a, QVariant b)
+QVariant Constraint::times(QVariant u, QVariant v)
 {
-  return operation(ableton::estd::multiplies<>{}, b, a);
+  return operation(ableton::estd::multiplies<>{}, v, u);
 }
 
-QVariant Constraint::times(QVariant a, QVariant b, QVariant c)
+QVariant Constraint::times(QVariant u, QVariant v, QVariant w)
 {
-  return operation(ableton::estd::multiplies<>{}, c, b, a);
+  return operation(ableton::estd::multiplies<>{}, w, v, u);
 }
 
-QVariant Constraint::times(QVariant a, QVariant b, QVariant c, QVariant d)
+QVariant Constraint::times(QVariant u, QVariant v, QVariant w, QVariant x)
 {
-  return operation(ableton::estd::multiplies<>{}, d, c, b, a);
+  return operation(ableton::estd::multiplies<>{}, x, w, v, u);
 }
 
-QVariant Constraint::times(QVariant a, QVariant b, QVariant c, QVariant d, QVariant e)
+QVariant Constraint::times(QVariant u, QVariant v, QVariant w, QVariant x, QVariant y)
 {
-  return operation(ableton::estd::multiplies<>{}, e, d, c, b, a);
+  return operation(ableton::estd::multiplies<>{}, y, x, w, v, u);
 }
 
-QVariant Constraint::times(QVariant a, QVariant b, QVariant c, QVariant d, QVariant e,  QVariant f)
+QVariant Constraint::times(QVariant u, QVariant v, QVariant w, QVariant x, QVariant y,  QVariant z)
 {
-  return operation(ableton::estd::multiplies<>{}, f, e, d, c, b, a);
+  return operation(ableton::estd::multiplies<>{}, z, y, x, w, v, u);
 }
 
-QVariant Constraint::divide(QVariant a, QVariant b)
+QVariant Constraint::divide(QVariant u, QVariant v)
 {
-  return operation(ableton::estd::divides<>{}, b, a);
+  return operation(ableton::estd::divides<>{}, v, u);
 }
 
-QVariant Constraint::divide(QVariant a, QVariant b, QVariant c)
+QVariant Constraint::divide(QVariant u, QVariant v, QVariant w)
 {
-  return operation(ableton::estd::divides<>{}, c, b, a);
+  return operation(ableton::estd::divides<>{}, w, v, u);
 }
 
-QVariant Constraint::divide(QVariant a, QVariant b, QVariant c, QVariant d)
+QVariant Constraint::divide(QVariant u, QVariant v, QVariant w, QVariant x)
 {
-  return operation(ableton::estd::divides<>{}, d, c, b, a);
+  return operation(ableton::estd::divides<>{}, x, w, v, u);
 }
 
-QVariant Constraint::divide(QVariant a, QVariant b, QVariant c, QVariant d, QVariant e)
+QVariant Constraint::divide(QVariant u, QVariant v, QVariant w, QVariant x, QVariant y)
 {
-  return operation(ableton::estd::divides<>{}, e, d, c, b, a);
+  return operation(ableton::estd::divides<>{}, y, x, w, v, u);
 }
 
-QVariant Constraint::divide(QVariant a, QVariant b, QVariant c, QVariant d, QVariant e,  QVariant f)
+QVariant Constraint::divide(QVariant u, QVariant v, QVariant w, QVariant x, QVariant y,  QVariant z)
 {
-  return operation(ableton::estd::divides<>{}, f, e, d, c, b, a);
+  return operation(ableton::estd::divides<>{}, z, y, x, w, v, u);
 }
 
-QVariant Constraint::eq(QVariant a, QVariant b)
+QVariant Constraint::eq(QVariant u, QVariant v)
 {
-  return operation(ableton::estd::equal_to<>{}, b, a);
+  return operation(ableton::estd::equal_to<>{}, v, u);
 }
 
-QVariant Constraint::geq(QVariant a, QVariant b)
+QVariant Constraint::geq(QVariant u, QVariant v)
 {
-  return operation(ableton::estd::greater_equal<>{}, b, a);
+  return operation(ableton::estd::greater_equal<>{}, v, u);
 }
 
-QVariant Constraint::leq(QVariant a, QVariant b)
+QVariant Constraint::leq(QVariant u, QVariant v)
 {
-  return operation(ableton::estd::less_equal<>{}, b, a);
+  return operation(ableton::estd::less_equal<>{}, v, u);
 }
 
 } // namespace cassowary
