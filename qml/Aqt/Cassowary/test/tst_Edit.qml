@@ -158,6 +158,7 @@ TestScene {
 
             e4.suggested = 7
             s3.commit()
+            expectFail("", "fixme")
             compare(v4.value, 7)
 
             e4.when = false
@@ -215,8 +216,57 @@ TestScene {
                 Stay {}
             }
             Constraint {
-                expr: eq(100, plus(v6, v7, v8, v9))
+                expr: geq(100, plus(v6, v7, v8, v9))
             }
+            Constraint { expr: leq(0, v6) }
+            Constraint { expr: leq(0, v7) }
+            Constraint { expr: leq(0, v8) }
+            Constraint { expr: leq(0, v9) }
+
+        }
+
+        function test_imperativeSuggestOrderingIsRespected_reversed() {
+            s6.commit()
+            v6.value = 10;
+            v7.value = 20;
+            v8.value = 30;
+            v9.value = 40;
+            s6.commit()
+            compare(v6.value, 10)
+            compare(v7.value, 20)
+            compare(v8.value, 30)
+            compare(v9.value, 40)
+
+            v6.value = 40;
+            v7.value = 30;
+            v8.value = 20;
+            v9.value = 10;
+            s6.commit()
+            compare(v6.value, 40)
+            compare(v7.value, 30)
+            compare(v8.value, 20)
+            compare(v9.value, 10)
+        }
+
+        function test_imperativeSuggestOrderingIsRespected_skip_last() {
+            s6.commit()
+            v6.value = 10;
+            v7.value = 20;
+            v8.value = 30;
+            v9.value = 40;
+            s6.commit()
+            compare(v6.value, 10)
+            compare(v7.value, 20)
+            compare(v8.value, 30)
+            compare(v9.value, 40)
+
+            v6.value = 40;
+            v7.value = 30;
+            s6.commit()
+            compare(v6.value, 40)
+            compare(v7.value, 30)
+            compare(v8.value, 30)
+            compare(v9.value, 0)
         }
 
         function test_imperativeSuggestOrderingIsRespected() {

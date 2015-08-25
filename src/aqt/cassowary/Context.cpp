@@ -157,19 +157,22 @@ bool commitSuggestions(
   using edit_t = typename EditsT::value_type;
   using suggestion_t = typename SuggestionsT::value_type;
 
-  if (!suggestions.empty() || !edits.empty()) {
-    std::for_each(
-      edits.begin(), edits.end(),
-      rheaGuard([&] (const edit_t& e) {
-        ctx.log("  Add edit var:", e.first);
-        ctx.solver().add_edit_var(e.first);
-      }));
+  if (!suggestions.empty() || !edits.empty())
+  {
+    {
+      auto count = double{1.0};
+      std::for_each(
+        edits.begin(), edits.end(),
+        rheaGuard([&] (const edit_t& e) {
+          ctx.log("  Add edit var:", e.first);
+          ctx.solver().add_edit_var(e.first, rhea::strength::strong(), ++count);
+        }));
+    }
 
     if (!edits.empty()) {
       rheaGuard([&] {
-        ctx.log("  Reseting stays...");
-        ctx.solver().reset_stay_constants();
-        ctx.requestSolve();
+        ctx.log(" Solving");
+        ctx.solver().solve();
       })();
     }
 
