@@ -27,9 +27,13 @@ Variable::Variable(QQuickItem* pParent)
   : Contextual(pParent)
   , mVariable([this] (double value) {
     if (!rhea::near_zero(value - mLastValue)) {
+      log("    ... updated: ", mVariable, value);
       mLastValue = value;
       auto ctx = context();
-      auto notification = [this, value] { Q_EMIT valueChanged(value); };
+      auto notification = [this, value] {
+        log("    ... notify: ", mVariable, value);
+        Q_EMIT valueChanged(value);
+      };
       if (ctx) {
         ctx->notify(mVariable, guarded(notification));
       } else {
