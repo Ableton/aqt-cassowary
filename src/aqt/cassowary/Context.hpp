@@ -131,7 +131,7 @@ auto rheaGuard(Fn&& fn)
   -> RheaGuard<typename std::decay<Fn>::type>
 {
   return { fn };
-};
+}
 
 struct ValueTag {};
 struct WeightTag {};

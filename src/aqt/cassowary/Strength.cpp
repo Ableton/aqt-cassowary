@@ -36,7 +36,7 @@ rhea::strength Strength::impl(Types t)
   case Weak:
     return rhea::strength::weak();
   }
-#if defined(_MSC_VER)
+#if !defined(__clang__)
   return rhea::strength::required();
 #endif
 }
