@@ -83,6 +83,15 @@ Example:
            -DBoost_INCLUDE_DIR=/opt/local/include/
 ```
 
+Maintainers
+-----------
+
+The current maintainers of the project are:
+
+- Juan Pedro Bolívar Puente [@arximboldi](https://github.com/arximboldi)
+- Robert Feldbinder [@rof-ableton](https://github.com/rof-ableton)
+- Alain Martin [@ala-ableton](https://github.com/ala-ableton)
+
 License
 -------
 
