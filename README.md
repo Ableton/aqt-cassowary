@@ -62,12 +62,16 @@ Test dependencies:
   mkdir build
   cd build
   cmake ..
-  cmake --build .
+  cmake --build . --config Release
+  cmake --build . --config Release --target install
 ```
 
+The resulting plugin is then found inside `build/lib/qml`
+
 The unit tests can be executed with *ctest*:
+
 ```
-  ctest -V
+  ctest -V Release
 ```
 
 You might set the following variables:

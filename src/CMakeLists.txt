@@ -98,35 +98,15 @@ set_target_properties(AqtCassowaryPlugin
 set_target_properties(AqtCassowaryPlugin
   PROPERTIES LIBRARY_OUTPUT_DIRECTORY_RELEASE ${plugin_output})
 
-# rewrite qmldir to the plugin in the output folder (PATH_TO_PLUGIN is used
-# in qmldir.in)
-set(PATH_TO_PLUGIN "${PROJECT_BINARY_DIR}/output")
-configure_file(
-  "${PROJECT_SOURCE_DIR}/qml/Aqt/Cassowary/qmldir.in"
-  "${PROJECT_SOURCE_DIR}/qml/Aqt/Cassowary/qmldir"
-  @ONLY)
-unset(PATH_TO_PLUGIN)
-
-# prepare another qmldir, which we can use for installation
-set(PATH_TO_PLUGIN "")
-configure_file(
-  "${PROJECT_SOURCE_DIR}/qml/Aqt/Cassowary/qmldir.in"
-  "${plugin_output}/qmldir"
-  @ONLY)
-unset(PATH_TO_PLUGIN)
-
-set(PLUGIN_INSTALL_DIR "lib/qml")
 install(TARGETS AqtCassowaryPlugin
   LIBRARY DESTINATION "${PLUGIN_INSTALL_DIR}/Aqt/Cassowary")
-install(FILES "${plugin_output}/qmldir"
-  DESTINATION "${PLUGIN_INSTALL_DIR}/Aqt/Cassowary")
-install(DIRECTORY "${PROJECT_SOURCE_DIR}/qml/Aqt/Cassowary"
+install(DIRECTORY "${PROJECT_SOURCE_DIR}/qml/Aqt"
   DESTINATION "${PLUGIN_INSTALL_DIR}"
-  FILES_MATCHING REGEX ".*\\.(qml|js)$")
+  FILES_MATCHING REGEX "(qmldir|(.*\\.(qml|js)))$")
 
 # add tests
 add_test(AqtCassowaryTestCase
   qmltestrunner
-  -import "${PROJECT_SOURCE_DIR}/qml"
+  -import "${PLUGIN_INSTALL_DIR}"
   -import "${PROJECT_SOURCE_DIR}/compat/qml"
   -input "${PROJECT_SOURCE_DIR}/qml")
