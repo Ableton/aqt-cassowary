@@ -58,7 +58,7 @@ class Edit : public Targeted
   Q_OBJECT
 
 public:
-  Edit(QQuickItem* pParent=0);
+  Edit(QQuickItem* pParent = nullptr);
 
   /*!
    *  Number containing the current suggestion for what the user wants

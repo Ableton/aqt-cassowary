@@ -47,7 +47,7 @@ class Stay : public Targeted
   Q_OBJECT
 
 public:
-  Stay(QQuickItem* pParent=0);
+  Stay(QQuickItem* pParent = nullptr);
 };
 
 } // namespace cassowary
