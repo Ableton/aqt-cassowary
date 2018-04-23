@@ -85,8 +85,7 @@ add_library(AqtCassowaryPlugin MODULE
 target_link_libraries(AqtCassowaryPlugin Rhea::Rhea Qt5::Quick)
 target_include_directories(AqtCassowaryPlugin PUBLIC
   "${PROJECT_SOURCE_DIR}/compat/src"
-  "${Rhea_INCLUDE_DIR}"
-  "${Boost_INCLUDE_DIRS}")
+  "${Rhea_INCLUDE_DIR}")
 target_compile_options(AqtCassowaryPlugin
   PUBLIC ${cxx11_options} ${warning_options})
 

@@ -30,8 +30,8 @@ ABL_DISABLE_WARNINGS
 #include <QtQuick/QQuickItem>
 #include <rhea/simplex_solver.hpp>
 #include <rhea/iostream.hpp>
-#include <boost/lexical_cast.hpp>
 #include <queue>
+#include <sstream>
 ABL_RESTORE_WARNINGS
 
 namespace aqt {
