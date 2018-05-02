@@ -50,7 +50,6 @@ Requirements
 
 Dependencies:
   - Qt (>= 5.3)
-  - Boost (>= 1.54)
   - CMake (>= 2.8.12)
 
 Test dependencies:
@@ -74,17 +73,13 @@ The unit tests can be executed with *ctest*:
   ctest -V Release
 ```
 
-You might set the following variables:
-- `Boost_INCLUDE_DIR` to the folder, where Boost headers are found
-
 In case the CMake files shipped with Qt are not found, set the `CMAKE_PREFIX_PATH`
 to the Qt installation prefix. See the
 [Qt5 CMake manual](http://qt-project.org/doc/qt-5/cmake-manual.html) for more.
 
 Example:
 ```
-  cmake .. -DCMAKE_PREFIX_PATH=~/Qt/Qt5.3.1/clang_64 \
-           -DBoost_INCLUDE_DIR=/opt/local/include/
+  cmake .. -DCMAKE_PREFIX_PATH=~/Qt/Qt5.3.1/clang_64
 ```
 
 Maintainers
