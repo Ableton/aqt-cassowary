@@ -1,8 +1,7 @@
 Aqt.Cassowary
 =============
 
-[![Build Status]
-  (https://travis-ci.org/Ableton/aqt-cassowary.svg?branch=master)]
+[![Build Status](https://travis-ci.org/Ableton/aqt-cassowary.svg?branch=master)]
 (https://travis-ci.org/Ableton/aqt-cassowary)
 
 Aqt.Cassowary (pronounced like *Acute Cassowary*) is a Qt plugin that
